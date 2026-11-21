@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AlvisyaLabs</title>
+<meta name="description" content="Halaman muka aplikasi AlvisyaLabs: CCare Plus, Jasa IPB, Antrean, AwanMedis, dan lainnya.">
+<meta name="theme-color" content="#0F2742">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon/alvisya-192.png">
+<link rel="apple-touch-icon" href="ikon/alvisya-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap">
+<style>
+:root{--utama:#0F2742;--kanvas:#F5F8F8;--isian:#F2F6F6;--kartu:#FFFFFF;--garis:#D5E0E0;--pemisah:#E3EBEA;--teks:#0F2742;--teks-2:#4F6478;--ubin:#E6EEF2;--hijau:#3B7A1E;--kuning:#B45309;--tombol-teks:#FFFFFF}
+@media (prefers-color-scheme:dark){:root{--utama:#9CC3E6;--kanvas:#0B1726;--isian:#13233A;--kartu:#112036;--garis:#2A3E58;--pemisah:#1E3149;--teks:#E8EEF5;--teks-2:#A9B7C9;--ubin:#1B2E48;--hijau:#7CC35A;--kuning:#F0A04B;--tombol-teks:#0B1726;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--kanvas);color:var(--teks);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-text-size-adjust:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--utama);outline-offset:2px}
+.kepala{background:var(--kartu);border-bottom:1px solid var(--garis);padding:12px max(16px,env(safe-area-inset-right)) 12px max(16px,env(safe-area-inset-left));padding-top:max(12px,env(safe-area-inset-top))}
+.lebar{max-width:1180px;margin:0 auto}
+.kepala .lebar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
+.merek{display:flex;align-items:center;gap:10px;flex-grow:1;font-size:20px;font-weight:800;letter-spacing:-.2px}
+.merek img{width:30px;height:28px}
+.cari{display:flex;flex-direction:column;gap:4px;flex:1 1 280px;max-width:360px}
+.cari label{font-size:13px;font-weight:600;color:var(--teks-2)}
+.kotak{display:flex;align-items:center;gap:8px;height:44px;padding:0 12px;border:1px solid var(--garis);border-radius:8px;background:var(--isian)}
+.kotak input{flex:1;min-width:0;border:0;outline:none;background:transparent;font-size:16px;font-family:inherit;color:var(--teks)}
+.kotak:focus-within{outline:3px solid var(--utama);outline-offset:1px}
+main{padding:24px max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left))}
+main .lebar{display:flex;flex-direction:column;gap:40px}
+.sapa{margin:0;font-size:15px;color:var(--teks-2)}
+.judul{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+h1{margin:0;font-size:28px;font-weight:800;letter-spacing:-.3px}
+.kecil{font-size:14px;color:var(--teks-2);font-variant-numeric:tabular-nums}
+.meja{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.kartu{display:flex;flex-direction:column;gap:16px;padding:20px;border-radius:16px;background:var(--kartu);border:1px solid var(--garis)}
+.kartu .atas{display:flex;gap:14px;align-items:flex-start}
+.kartu h2{margin:0;font-size:20px;font-weight:800}
+.kartu p{margin:2px 0 0;font-size:15px;color:var(--teks-2);line-height:1.35}
+.kartu .isi{flex:1;min-width:0}.kartu{position:relative}.regang{text-decoration:none}.kartu .bintang,.kartu .buka{position:relative;z-index:1}
+.ik{flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--ubin);border-radius:12px;width:48px;height:48px}
+.kartu .ik{width:56px;height:56px;border-radius:14px}
+.ik img{width:100%;height:100%;border-radius:inherit;display:block}
+.ik svg{width:26px;height:26px;fill:none;stroke:var(--teks);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.buka{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border-radius:8px;background:var(--utama);color:var(--tombol-teks);font-size:16px;font-weight:700;text-decoration:none;transition:filter .15s}
+.buka:hover{filter:brightness(1.12)}
+.bintang{flex-shrink:0;width:44px;height:44px;border:0;border-radius:8px;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--teks-2);transition:background .15s}
+.bintang:hover{background:var(--ubin)}
+.bintang svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
+.bintang[aria-pressed=true]{color:var(--teks)}
+.bintang[aria-pressed=true] svg{fill:currentColor}
+.kosong{margin:0;padding:28px 16px;border:1px dashed var(--garis);border-radius:16px;font-size:16px;color:var(--teks-2);text-align:center}
+.grup{display:flex;flex-direction:column;gap:12px}
+.grup h2{margin:0;font-size:13px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--teks-2)}
+.ubin{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.ub{display:flex;align-items:center;border-radius:12px;background:var(--kartu);border:1px solid var(--garis);min-height:72px;transition:border-color .15s}
+.ub:hover{border-color:var(--teks-2)}
+.ub a{display:flex;align-items:center;gap:12px;padding:14px 4px 14px 16px;flex:1;min-width:0;text-decoration:none}
+.ub .ik{width:40px;height:40px;border-radius:10px}
+.ub .ik svg{width:22px;height:22px}
+.ub b{display:block;font-size:16px}
+.ub small{display:block;font-size:13px;color:var(--teks-2)}
+.ub .bintang{margin-right:8px}
+.kaki{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;justify-content:space-between;font-size:13px;color:var(--teks-2)}
+.kaki .hak{display:flex;align-items:center;gap:6px}
+.kaki .hak img{width:16px;height:15px}
+.sinkron{display:flex;align-items:center;gap:6px}
+.sinkron svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.sinkron.ok{color:var(--hijau)}.sinkron.tunda{color:var(--kuning)}
+.pesan{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%) translateY(16px);opacity:0;max-width:calc(100vw - 32px);padding:12px 16px;border-radius:12px;background:var(--teks);color:var(--kanvas);font-size:15px;font-weight:600;box-shadow:0 8px 24px rgba(15,39,66,.24);transition:opacity .2s,transform .2s;pointer-events:none}
+.pesan.tampil{opacity:1;transform:translateX(-50%) translateY(0)}
+.tak-ada{margin:0;font-size:15px;color:var(--teks-2)}
+@media (max-width:600px){h1{font-size:24px}.meja{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}.kartu{padding:14px;gap:0}.kartu .atas{flex-wrap:wrap;gap:10px}.kartu .ik{width:48px;height:48px}.kartu .isi{order:3;flex-basis:100%}.kartu h2{font-size:17px}.kartu p,.kartu .buka{display:none}.kartu .bintang{margin:-8px -8px 0 auto}.regang::after{content:'';position:absolute;inset:0;border-radius:16px}.cari{max-width:none;flex-basis:100%}.ubin{grid-template-columns:1fr}main .lebar{gap:32px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="kepala">
+  <div class="lebar">
+    <div class="merek"><img src="ikon/alvisya-simbol.svg" alt=""><span>AlvisyaLabs</span></div>
+    <div class="cari">
+      <label for="cari">Cari aplikasi</label>
+      <div class="kotak">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--teks-2)"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4"/></svg>
+        <input id="cari" type="search" placeholder="mis. Jasa IPB" autocomplete="off">
+      </div>
+    </div>
+  </div>
+</header>
+<main>
+  <div class="lebar">
+    <section aria-labelledby="judul-meja" style="display:flex;flex-direction:column;gap:16px">
+      <div class="judul">
+        <p class="sapa" id="sapa" style="width:100%">Selamat datang</p>
+        <h1 id="judul-meja">Meja Utama</h1>
+        <span class="kecil" id="jumlah"></span>
+      </div>
+      <div class="meja" id="meja"></div>
+    </section>
+    <div id="grup"></div>
+    <footer class="kaki">
+      <span class="sinkron" id="sinkron" role="status"></span>
+      <span class="hak"><span>©</span><img src="ikon/alvisya-simbol.svg" alt=""><span>Alvisya Labs by ArijalMuhammad</span></span>
+    </footer>
+  </div>
+</main>
+<div class="pesan" id="pesan" role="status" aria-live="polite"></div>
+<script>
+'use strict';
+/* Daftar aplikasi: tambah baris baru di sini. id: huruf kecil/angka/tanda hubung. */
+const APL = [
+  { id: 'ccare', g: 'Klinik IPB', nama: 'CCare Plus', ket: 'C-CARE + ekstensi dokter', url: 'https://c-care.ipb.ac.id/', logo: 'ikon/ccare-plus.svg' },
+  { id: 'jasa', g: 'Klinik IPB', nama: 'Jasa IPB', ket: 'Dasbor jasa dan shift', url: 'https://arijalmuhammad.github.io/jasa-ipb/', d: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+  { id: 'antrean', g: 'Klinik IPB', nama: 'Antrean', ket: 'Nomor antrean harian', url: 'https://docs.google.com/spreadsheets/d/1_U6yGAANGuQXeqc5bOs_LZ2B3rTjcLjx1IBc1Cs_Nzw/edit', d: 'M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4zM10 7v10' },
+  { id: 'pcare', g: 'Klinik IPB', nama: 'PCare BPJS', ket: 'Situs resmi BPJS Kesehatan', url: 'https://pcarejkn.bpjs-kesehatan.go.id/eclaim/', d: 'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6' },
+  { id: 'awanmedis', g: 'Alvisya Labs', nama: 'AwanMedis', ket: 'RME klinik dan praktik', url: 'https://awanmedis.my.id/', d: 'M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z' },
+  { id: 'awandosis', g: 'Alvisya Labs', nama: 'AwanDosis', ket: 'Kalkulator dosis anak dan dewasa', url: 'https://pediatri.awanmedis.my.id/', d: 'M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7zM7 10l7 7' }
+];
+const GRUP = ['Klinik IPB', 'Alvisya Labs'];
+const MAKS = 4, BAWAAN = ['ccare', 'jasa'];
+/* Sinkron favorit lintas perangkat (Apps Script milik dr. Arijal).
+ * shortcut: token tertanam di halaman publik; siapa pun yang membacanya bisa mengubah daftar bintang (bukan data pasien). Ganti ke login bila perlu. */
+const SINKRON = { url: 'https://script.google.com/macros/s/AKfycbzfszQuJjcDD71vzMB9xGWTu40OIRn88PUDNywQpz5IOUcdR21M5lqhHz4W1FugC8Xx/exec', t: 'Y_FNdV9ztxHTbmdXO0e-teCiktKY9F8J' };
+const BINTANG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.5 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>';
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const simpan = { baca(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, tulis(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+const bersih = (ids) => [...new Set((ids || []).filter((id) => APL.some((a) => a.id === id)))].slice(0, MAKS);
+
+let st = simpan.baca('alvisyaMeja') || { ids: BAWAAN, w: 0, tunda: false };
+st.ids = bersih(st.ids);
+
+function ikon(a) {
+  return a.logo ? `<span class="ik"><img src="${esc(a.logo)}" alt=""></span>`
+    : `<span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${esc(a.d)}"/></svg></span>`;
+}
+function tombolBintang(a) {
+  const on = st.ids.includes(a.id);
+  const label = on ? `Lepas ${a.nama} dari Meja Utama` : `Taruh ${a.nama} di Meja Utama`;
+  return `<button type="button" class="bintang" data-id="${esc(a.id)}" aria-pressed="${on}" aria-label="${esc(label)}" title="${esc(label)}">${BINTANG}</button>`;
+}
+const tautan = (a) => `href="${esc(a.url)}" target="_blank" rel="noopener"`;
+
+function gambar() {
+  const q = $('#cari').value.trim().toLowerCase();
+  const cocok = (a) => !q || (a.nama + ' ' + a.ket).toLowerCase().includes(q);
+  const meja = st.ids.map((id) => APL.find((a) => a.id === id)).filter(cocok);
+  $('#jumlah').textContent = `${st.ids.length} dari ${MAKS} aplikasi · ketuk bintang untuk menambah atau melepas`;
+  $('#meja').innerHTML = meja.length ? meja.map((a) => `
+    <article class="kartu">
+      <div class="atas">${ikon(a)}<div class="isi"><h2><a class="regang" ${tautan(a)}>${esc(a.nama)}</a></h2><p>${esc(a.ket)}</p></div>${tombolBintang(a)}</div>
+      <a class="buka" ${tautan(a)}>Buka ${esc(a.nama)}</a>
+    </article>`).join('')
+    : `<p class="kosong" style="grid-column:1/-1">${q ? 'Tidak ada aplikasi Meja Utama yang cocok.' : 'Belum ada aplikasi di Meja Utama. Ketuk bintang pada aplikasi di bawah.'}</p>`;
+  const html = GRUP.map((g) => {
+    const isi = APL.filter((a) => a.g === g && cocok(a));
+    if (!isi.length) return '';
+    return `<section class="grup"><h2>${esc(g)}</h2><div class="ubin">${isi.map((a) => `
+      <div class="ub"><a ${tautan(a)}>${ikon(a)}<span style="min-width:0"><b>${esc(a.nama)}</b><small>${esc(a.ket)}</small></span></a>${tombolBintang(a)}</div>`).join('')}</div></section>`;
+  }).join('');
+  $('#grup').innerHTML = html ? `<div style="display:flex;flex-direction:column;gap:32px">${html}</div>` : `<p class="tak-ada">Tidak ada aplikasi bernama “${esc(q)}”.</p>`;
+}
+
+let tPesan;
+function pesan(teks) { const p = $('#pesan'); p.textContent = teks; p.classList.add('tampil'); clearTimeout(tPesan); tPesan = setTimeout(() => p.classList.remove('tampil'), 2600); }
+function tandaSinkron(kondisi) {
+  const s = $('#sinkron');
+  const peta = { ok: ['ok', '<path d="M5 12l4 4 10-10"/>', 'Meja Utama tersinkron di semua perangkat'], tunda: ['tunda', '<path d="M12 8v5M12 16.5v.5M10.3 3.9 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0z"/>', 'Belum tersinkron, dicoba lagi otomatis'], cek: ['', '<path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5"/>', 'Menyinkronkan…'] };
+  const [k, p, t] = peta[kondisi];
+  s.className = 'sinkron ' + k; s.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg><span>${t}</span>`;
+}
+
+async function panggil(q) {
+  const ctl = new AbortController(); const batas = setTimeout(() => ctl.abort(), 12000);
+  try { const r = await fetch(`${SINKRON.url}?t=${SINKRON.t}&${q}`, { signal: ctl.signal }); return await r.json(); }
+  finally { clearTimeout(batas); }
+}
+async function kirim() {
+  st.tunda = true; simpan.tulis('alvisyaMeja', st); tandaSinkron('cek');
+  try {
+    const r = await panggil('meja=' + (st.ids.length ? st.ids.join(',') : '-') + '&w=' + st.w);
+    if (!r || !r.ok) throw new Error('relay');
+    if (r.usang && r.meja) { st = { ids: bersih(r.meja.ids), w: Number(r.meja.w) }; gambar(); }   // perangkat lain lebih baru
+    st.tunda = false; simpan.tulis('alvisyaMeja', st); tandaSinkron('ok');
+  } catch (e) { tandaSinkron('tunda'); }
+}
+async function tarik() {
+  if (st.tunda) return kirim();   // perubahan di perangkat ini belum terkirim: kirim dulu
+  tandaSinkron('cek');
+  try {
+    const r = await panggil('meja');
+    if (!r || !r.ok) throw new Error('relay');
+    if (r.meja && Number(r.meja.w) > Number(st.w || 0)) { st = { ids: bersih(r.meja.ids), w: Number(r.meja.w), tunda: false }; simpan.tulis('alvisyaMeja', st); gambar(); }
+    tandaSinkron('ok');
+  } catch (e) { tandaSinkron('tunda'); }
+}
+
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('.bintang'); if (!b) return;
+  const id = b.dataset.id, a = APL.find((x) => x.id === id);
+  if (st.ids.includes(id)) { st.ids = st.ids.filter((x) => x !== id); pesan(`${a.nama} dilepas dari Meja Utama`); }
+  else if (st.ids.length >= MAKS) { pesan(`Meja Utama penuh (${MAKS}). Lepas satu aplikasi dulu.`); return; }
+  else { st.ids = [...st.ids, id]; pesan(`${a.nama} ditaruh di Meja Utama`); }
+  st.w = Date.now(); gambar();
+  const sama = document.querySelector(`.bintang[data-id="${id}"]`); if (sama) sama.focus();
+  kirim();
+});
+$('#cari').addEventListener('input', gambar);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') tarik(); });
+window.addEventListener('online', tarik);
+
+const jam = new Date().getHours();
+$('#sapa').textContent = 'Selamat ' + (jam < 11 ? 'pagi' : jam < 15 ? 'siang' : jam < 18 ? 'sore' : 'malam') + ', dr. Arijal';
+gambar(); tarik();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
