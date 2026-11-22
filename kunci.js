@@ -98,7 +98,7 @@
         ${mode === 'buka' ? '<button type="button" class="ak-teks" data-k="lupa">Lupa PIN?</button>' : ''}`;
       el.querySelectorAll('[data-n]').forEach((b) => b.onclick = () => tekan(b.dataset.n));
       el.querySelectorAll('[data-k]').forEach((b) => b.onclick = () => ({ hapus: () => tekan('h'), bio: pakaiBio, lupa: tanyaLupa })[b.dataset.k]());
-      if (salah) { el.classList.remove('goyang'); void el.offsetWidth; el.classList.add('goyang'); try { navigator.vibrate && navigator.vibrate(40); } catch (e) { } }
+      if (salah) { el.classList.remove('goyang'); void el.offsetWidth; el.classList.add('goyang'); window.AlvisyaUmpan('kuat'); }
     }
     function ketik(e) { if (/^[0-9]$/.test(e.key)) { e.preventDefault(); tekan(e.key); } else if (e.key === 'Backspace') { e.preventDefault(); tekan('h'); } }
     async function tekan(n) {
@@ -117,7 +117,7 @@
           return (await Bio.ada()) && !K().bio ? tawarBio() : tutup(true);
         }
         const k = K();
-        if (await hashPin(isi, k.garam) === k.hash) { k.gagal = 0; ls.set(LS, k); return tutup(true); }
+        if (await hashPin(isi, k.garam) === k.hash) { k.gagal = 0; ls.set(LS, k); window.AlvisyaUmpan(); return tutup(true); }
         k.gagal = (k.gagal || 0) + 1; ls.set(LS, k); isi = '';
         if (k.gagal >= MAKS) { hapusData(); return tutup(false); }
         gambar('PIN salah. Sisa ' + (MAKS - k.gagal) + ' percobaan sebelum data CCare Plus di perangkat ini dihapus.', true);
@@ -126,7 +126,8 @@
     async function pakaiBio() {
       if (sibuk) return; sibuk = true;
       const ok = await Bio.periksa(K().bio); sibuk = false;
-      if (ok) { const k = K(); k.gagal = 0; ls.set(LS, k); tutup(true); } else gambar('Sidik jari tidak dikenali. Pakai PIN.', true);
+      // sidik jari cocok → getar + bunyi; ditolak → getar kuat (lewat gambar(..., true))
+      if (ok) { const k = K(); k.gagal = 0; ls.set(LS, k); window.AlvisyaUmpan(); tutup(true); } else gambar('Sidik jari tidak dikenali. Pakai PIN.', true);
     }
     function tawarBio() {
       el.innerHTML = `${logo}<h1 id="akJudul">Pakai sidik jari?</h1><p class="ak-ket">Buka AlvisyaLabs dengan sidik jari atau kunci layar perangkat. PIN tetap bisa dipakai.</p>
