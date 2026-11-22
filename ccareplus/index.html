@@ -14,10 +14,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
-:root{--utama:#0B7A72;--utama-tua:#075E58;--utama-tipis:#E6F4F2;--kanvas:#F5F8F8;--isian:#F2F6F6;--putih:#FFFFFF;--garis:#D5E0E0;--pemisah:#E3EBEA;
+:root{--utama:#0B7A72;--utama-tua:#075E58;--utama-tipis:#E6F4F2;--kanvas:#F5F8F8;--isian:#F2F6F6;--putih:#FFFFFF;--garis:#D5E0E0;--pemisah:#E3EBEA;--garis-isian:#7D8F95;
   --teks:#0F2742;--teks-2:#4F6478;--redup:#637580;--merah:#B91C1C;--merah-tipis:#FDF0F0;--kuning:#B45309;--kuning-tipis:#FEF3C7;--hijau:#3B7A1E;--hijau-tipis:#EAF4E2;
   --c1:#DCEFEC;--c2:#9FD3CC;--c3:#0B7A72;--c3-teks:#FFFFFF}
-@media (prefers-color-scheme:dark){:root{--utama:#2BB3A8;--utama-tua:#5FD0C6;--utama-tipis:#123A38;--kanvas:#0E1A1F;--isian:#15252B;--putih:#12212A;--garis:#2A3D44;--pemisah:#1E3036;
+@media (prefers-color-scheme:dark){:root{--utama:#2BB3A8;--utama-tua:#5FD0C6;--utama-tipis:#123A38;--kanvas:#0E1A1F;--isian:#15252B;--putih:#12212A;--garis:#2A3D44;--pemisah:#1E3036;--garis-isian:#5F7880;
   --teks:#E6EEF0;--teks-2:#9DB0B8;--redup:#7F929A;--merah:#F08080;--merah-tipis:#2A1A1D;--kuning:#E0A458;--kuning-tipis:#2C2416;--hijau:#7FC86A;--hijau-tipis:#1C2E17;--c1:#16403D;--c2:#1F6E66;--c3:#2BB3A8;--c3-teks:#0E1A1F}}
 *{box-sizing:border-box}
 .kembali{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:44px;height:44px;margin-left:-12px;border-radius:8px;color:var(--teks);text-decoration:none}
@@ -115,7 +115,7 @@ tr.ini td{background:var(--utama-tipis)}
 .pita.awas{background:var(--kuning-tipis);border-color:transparent;color:var(--teks)}
 .pita b{font-weight:700}.pita .isi-pita{flex:1 1 240px;min-width:0}
 .pita svg{width:18px;height:18px;flex:none}
-select.isian,input.isian{font:inherit;font-size:14px;text-overflow:ellipsis;color:var(--teks);background:var(--isian);border:1px solid var(--garis);border-radius:8px;padding:6px 8px;width:100%;min-width:0}
+select.isian,input.isian{font:inherit;font-size:14px;text-overflow:ellipsis;color:var(--teks);background:var(--isian);border:1px solid var(--garis-isian);border-radius:8px;padding:6px 8px;width:100%;min-width:0}
 select.isian.isi{background:var(--putih);border-color:var(--utama)}
 select.isian.ganti{border-color:var(--kuning)}
 .jd-tata{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
