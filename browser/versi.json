@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.0",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.0.zip",
-  "sha256": "cb2955cbdcb333d7775844ef6e746c08eb042b8b52655771e4ca2001d35b0930",
-  "catatan": "Nama baru AlvisyaLabs Browser; menu pembaruan otomatis dan dari ZIP."
+  "versi": "0.2.1",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.1.zip",
+  "sha256": "184f17c40d812945f723faba953e8e110834ee69685f927afa4b27bcdfba2740",
+  "catatan": "Lebih ringan (tab C-CARE berbagi proses), kotak tanda tangan mini (CCare Dokter 4.10.5)."
 }
