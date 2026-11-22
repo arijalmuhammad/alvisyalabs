@@ -1,18 +1,25 @@
 /* Kunci aplikasi AlvisyaLabs — PIN 4 angka (+ sidik jari) saat MEMBUKA AlvisyaLabs, bukan per fitur.
  * Halaman muka: tampilkan layar kunci bila sesi belum terbuka.  Halaman lain (CCare Plus, apl/…): AlvisyaKunci.jaga()
  * mengalihkan ke halaman muka (?ke=…) bila sesi belum terbuka, lalu kembali ke halaman itu setelah PIN benar.
- * Sesi = sessionStorage (hilang bila aplikasi ditutup); ditinggal > 1 menit = terkunci lagi.
+ * Sesi = sessionStorage (hilang bila aplikasi ditutup). APK 1.7+: terkunci lagi hanya bila layar HP sempat mati/terkunci;
+ * peramban (tak bisa tahu HP terkunci): ditinggal > 1 menit = terkunci lagi.
  * 5x salah / Lupa PIN → data CCare Plus di perangkat ini dihapus (bisa ditarik ulang dari Sheet). Logbook tidak dihapus. */
 (function () {
   'use strict';
   const AKAR = new URL('./', document.currentScript.src).href;   // akar situs (tempat kunci.js)
-  const LS = 'ccareplus.kunci', PANJANG = 4, MAKS = 5, JEDA = 60e3, S_BUKA = 'alvisya.buka', S_TINGGAL = 'alvisya.tinggal';
+  const LS = 'ccareplus.kunci', PANJANG = 4, MAKS = 5, JEDA = 60e3, S_BUKA = 'alvisya.buka', S_TINGGAL = 'alvisya.tinggal', S_PADA = 'alvisya.bukaPada';
   const ls = { get: (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } } };
   const ss = { get: (k) => { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch (e) { } } };
   const K = () => ls.get(LS) || {};
   const adaPin = () => !!K().hash;
-  const terbuka = () => { const t = Number(ss.get(S_TINGGAL) || 0); return ss.get(S_BUKA) === '1' && !(t && Date.now() - t > JEDA); };
-  const tandaiBuka = () => { ss.set(S_BUKA, '1'); ss.set(S_TINGGAL, null); };
+  const layarApk = () => { try { return typeof window.AlvisyaLabs?.layarMati === 'function' ? Number(window.AlvisyaLabs.layarMati()) : null; } catch (e) { return null; } };
+  const terbuka = () => {
+    if (ss.get(S_BUKA) !== '1') return false;
+    const mati = layarApk();
+    if (mati != null) return !(mati > Number(ss.get(S_PADA) || 0));   // APK: aman selama HP tidak terkunci sejak PIN dibuka
+    const t = Number(ss.get(S_TINGGAL) || 0); return !(t && Date.now() - t > JEDA);
+  };
+  const tandaiBuka = () => { ss.set(S_BUKA, '1'); ss.set(S_TINGGAL, null); ss.set(S_PADA, String(Date.now())); };
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const b64 = (u) => btoa(String.fromCharCode(...new Uint8Array(u))), dariB64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
   async function hashPin(pin, garam) {
@@ -143,7 +150,7 @@
     return true;
   }
   const keHalaman = () => { const ke = new URLSearchParams(location.search).get('ke'); if (ke && /^[\w\-./#=:%~+]+$/.test(ke) && !ke.startsWith('//') && !/^[a-z]+:/i.test(ke)) location.replace(new URL(ke.replace(/^\/+/, ''), AKAR).href); };
-  // catat kapan aplikasi ditinggal; kembali setelah > 1 menit = terkunci lagi
+  // catat kapan aplikasi ditinggal (peramban: kembali setelah > 1 menit = terkunci lagi; APK: lihat layarMati)
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { if (ss.get(S_BUKA) === '1') ss.set(S_TINGGAL, String(Date.now())); return; }
     if (terbuka()) { ss.set(S_TINGGAL, null); return; }
