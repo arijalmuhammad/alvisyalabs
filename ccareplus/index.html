@@ -532,6 +532,7 @@ function pasangAksi() {
     if (a === 'bagi') $('tbBagi').click();
     if (a === 'hubung') bukaHubung();
     if (a === 'loginCcare') AlvisyaLabs.loginCcare();
+    if (a === 'ujiPcare') AlvisyaLabs.bukaPcare();
     if (a === 'fp') { fPasien = b.dataset.f; gambar(); const c = $('cariPasien'); if (c && cariPasien.q) { c.value = cariPasien.q; cariPasien(cariPasien.q); } }
     if (a === 'pasang' && pasangPrompt) { pasangPrompt.prompt(); pasangPrompt = null; gambar(); }
     if (a === 'batalScan') { b.disabled = true; try { await api.kirim({ aksi: 'scan.batal' }); D.mintaScan = null; Object.keys(cache).forEach(k => cache[k].mintaScan = null); gambar(); } catch (e) { toast(e.message); b.disabled = false; } }
@@ -735,6 +736,7 @@ function vLain() {
     <tfoot><tr><td class="k">Jumlah</td><td class="num">${t.hari}</td><td class="num">${n0(t.total)}</td><td class="num">${rp(t.terima)}</td></tr></tfoot></table></div>
     <p class="ket" style="margin:0;padding:8px 16px 12px">Diterima = bersih setelah PPh + uang event. <a href="${esc(D.url)}#gid=${D.gid.bulanan}" target="_blank" rel="noopener" style="display:inline-block;padding:12px 0;margin:-12px 0">Rincian di Sheet</a></p></section>
   <section class="kartu menu-lain"><h2 class="pad-kep">Aplikasi klinik</h2>
+    ${window.AlvisyaLabs && AlvisyaLabs.bukaPcare ? `<button class="baris-menu" data-aksi="ujiPcare"><span>Uji PCare di aplikasi<small>Login sendiri — cek apakah PCare bisa dipakai di HP</small></span>${panah}</button>` : ''}
     <a class="baris-menu" href="https://c-care.ipb.ac.id/" target="_blank" rel="noopener"><span>C-CARE IPB<small>Rekam medis klinik</small></span><span class="chev">${IK.luar}</span></a>
     <a class="baris-menu" href="https://docs.google.com/spreadsheets/d/1_U6yGAANGuQXeqc5bOs_LZ2B3rTjcLjx1IBc1Cs_Nzw/edit" target="_blank" rel="noopener"><span>Antrean<small>Nomor antrean harian</small></span><span class="chev">${IK.luar}</span></a>
     <a class="baris-menu" href="https://pcarejkn.bpjs-kesehatan.go.id/eclaim/" target="_blank" rel="noopener"><span>PCare BPJS<small>Situs resmi BPJS Kesehatan</small></span><span class="chev">${IK.luar}</span></a>
