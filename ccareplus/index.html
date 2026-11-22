@@ -427,6 +427,7 @@ function pasangAksi() {
     if (a === 'muatUlang') muat(awalDipilih, false, true);
     if (a === 'scan') $('tbScan').click();
     if (a === 'bagi') $('tbBagi').click();
+    if (a === 'hubung') bukaHubung();
     if (a === 'fp') { fPasien = b.dataset.f; gambar(); const c = $('cariPasien'); if (c && cariPasien.q) { c.value = cariPasien.q; cariPasien(cariPasien.q); } }
     if (a === 'pasang' && pasangPrompt) { pasangPrompt.prompt(); pasangPrompt = null; gambar(); }
     if (a === 'batalScan') { b.disabled = true; try { await api.kirim({ aksi: 'scan.batal' }); D.mintaScan = null; Object.keys(cache).forEach(k => cache[k].mintaScan = null); gambar(); } catch (e) { toast(e.message); b.disabled = false; } }
@@ -637,7 +638,7 @@ function vLain() {
     <button class="baris-menu" data-aksi="bagi"><span>Bagikan jadwal ke teman</span>${panah}</button>
     <button class="baris-menu" data-aksi="scan"><span>Minta scan C-CARE</span>${panah}</button>
     <a class="baris-menu" href="${esc(D.url)}" target="_blank" rel="noopener"><span>Buka Google Sheet</span><span class="chev">${IK.luar}</span></a>
-    ${CFG.mode === 'gas' ? '' : `${pasangPrompt ? `<button class="baris-menu" data-aksi="pasang"><span>Pasang di layar utama</span>${panah}</button>` : ''}<button class="baris-menu bahaya" data-aksi="keluar"><span>Keluar dari HP ini</span></button>`}
+    ${CFG.mode === 'gas' ? '' : `${pasangPrompt ? `<button class="baris-menu" data-aksi="pasang"><span>Pasang di layar utama</span>${panah}</button>` : ''}<button class="baris-menu" data-aksi="hubung"><span>Sambungkan HP atau tablet (QR)</span>${panah}</button><button class="baris-menu bahaya" data-aksi="keluar"><span>Keluar dari HP ini</span></button>`}
   </section></div>`;
 }
 
@@ -647,6 +648,7 @@ function vSetup() {
   $('isi').innerHTML = `<div class="setup masuk"><div class="merek" style="padding:0 0 16px"><span class="logo"><svg class="ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span><b style="font-size:20px">CCare Plus</b></div>
     <h1 style="font-size:22px">Sambungkan ke Sheet Anda</h1>
     <p class="sub" style="margin:8px 0 16px">Di Sheet: menu <b>Klinik → Pasang aplikasi HP</b>, lalu buka tautannya di HP ini. Atau salin <b>Kode pasang</b> (menu Klinik → Alamat &amp; kunci) dan tempel di bawah.</p>
+    <p class="sub" style="margin:0 0 16px">Sudah tersambung di laptop? Buka CCare Plus di sana → <b>Lainnya → Sambungkan HP atau tablet (QR)</b>, lalu pindai dengan kamera.</p>
     <label class="lbl" for="kodePasang">Kode pasang atau tautan dasbor</label>
     <div class="salin"><input class="isian" id="kodePasang" placeholder="SJC1:… atau https://script.google.com/…?dasbor=…" autocomplete="off"><button class="tb utama" id="pasangKode">Sambungkan</button></div>
     <p class="ket" id="pesanPasang" style="margin-top:8px"></p></div>`;
@@ -660,6 +662,27 @@ function vSetup() {
 }
 
 /* ---------- dialog: minta scan & bagikan jadwal ---------- */
+/* Sambungkan perangkat lain: QR berisi tautan alvisya.my.id/ccareplus/#SJC1:… (kunci hanya di bagian #, tidak terkirim ke server) */
+function tautanHubung() {
+  const b64 = btoa(unescape(encodeURIComponent(JSON.stringify({ u: AKUN.u, k: AKUN.k, n: AKUN.n || '' })))).replace(/\+/g, '-').replace(/\//g, '_');
+  return location.origin + location.pathname + '#SJC1:' + b64;
+}
+function muatQr() {
+  if (window.qrcode) return Promise.resolve();
+  return new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js'; sc.onload = ok; sc.onerror = () => no(new Error('Gagal memuat pembuat QR')); document.head.appendChild(sc); });
+}
+async function bukaHubung() {
+  if (!AKUN || !AKUN.u || !AKUN.k) return toast('Perangkat ini belum tersambung.');
+  const url = tautanHubung();
+  bukaDialog('Sambungkan HP atau tablet', `<div style="display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+    <div id="qrHubung" style="width:232px;height:232px;display:grid;place-items:center;background:#fff;border-radius:12px;border:1px solid var(--garis)" role="img" aria-label="Kode QR untuk menyambungkan perangkat lain">Memuat…</div>
+    <p style="margin:0">Arahkan kamera HP atau tablet ke kode ini, lalu buka tautannya. CCare Plus langsung tersambung.</p>
+    <p class="ket" style="margin:0">Siapa pun yang memindai kode ini bisa membuka dasbor Anda. Jangan difoto atau dibagikan.</p></div>`,
+    `<button class="tb kedua" type="button" id="salinHubung">Salin tautan</button><button class="tb utama" value="tutup">Selesai</button>`);
+  $('salinHubung').onclick = async () => { try { await navigator.clipboard.writeText(url); toast('Tautan disalin.'); } catch (e) { toast('Tidak bisa menyalin di perangkat ini.'); } };
+  try { await muatQr(); const q = qrcode(0, 'M'); q.addData(url); q.make(); $('qrHubung').innerHTML = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); const svg = $('qrHubung').firstElementChild; svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('width', '216'); svg.setAttribute('height', '216'); }
+  catch (e) { $('qrHubung').textContent = e.message + '. Pakai "Salin tautan".'; }
+}
 function bukaDialog(judul, isi, kaki) {
   $('dlgForm').innerHTML = `<div class="dlg-kepala"><h2 id="dlgJudul">${judul}</h2><button class="tutup" value="tutup" aria-label="Tutup">${IK.tutup}</button></div><div class="dlg-isi">${isi}</div>${kaki ? `<div class="dlg-kaki">${kaki}</div>` : ''}`;
   $('dlg').classList.remove('lembar'); $('dlg').showModal();
