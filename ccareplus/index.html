@@ -414,7 +414,7 @@ function pitaAtas() {
   if (m) {
     const tg = m.tanggal.map(t => +t.slice(8) + ' ' + BLN[+t.slice(5, 7) - 1]).join(', ');
     if (m.status === 'menunggu') h += `<div class="pita info">${IK.putar}<span class="isi-pita"><b>Scan diminta ${esc(m.waktu.slice(11))}</b> untuk ${esc(tg)} — menunggu komputer menyala dengan Chrome dan C-CARE sudah login.</span><button class="tb kedua" data-aksi="batalScan">Batalkan</button></div>`;
-    else if (m.status === 'jalan') h += `<div class="pita info">${IK.putar}<span class="isi-pita"><b>Sedang scan</b> di komputer · ${esc(m.pesan)}</span></div>`;
+    else if (m.status === 'jalan') h += `<div class="pita info">${IK.putar}<span class="isi-pita"><b>Sedang scan</b> · ${esc(m.pesan)}</span></div>`;
     else h += `<div class="pita ${m.status === 'selesai' ? 'info' : 'awas'}">${m.status === 'selesai' ? IK.ok : IK.awas}<span class="isi-pita"><b>${m.status === 'selesai' ? 'Scan selesai' : 'Scan gagal'} ${esc((m.diperbarui || '').slice(11))}</b> · ${esc(m.pesan)}</span><button class="tb kedua" data-aksi="batalScan">Tutup</button></div>`;
   }
   if (pasangPrompt) h += `<div class="pita">${IK.info}<span class="isi-pita">Pasang CCare Plus di layar utama HP — terbuka layar penuh seperti aplikasi.</span><button class="tb utama" data-aksi="pasang">Pasang</button></div>`;
@@ -428,6 +428,7 @@ function pasangAksi() {
     if (a === 'scan') $('tbScan').click();
     if (a === 'bagi') $('tbBagi').click();
     if (a === 'hubung') bukaHubung();
+    if (a === 'loginCcare') AlvisyaLabs.loginCcare();
     if (a === 'fp') { fPasien = b.dataset.f; gambar(); const c = $('cariPasien'); if (c && cariPasien.q) { c.value = cariPasien.q; cariPasien(cariPasien.q); } }
     if (a === 'pasang' && pasangPrompt) { pasangPrompt.prompt(); pasangPrompt = null; gambar(); }
     if (a === 'batalScan') { b.disabled = true; try { await api.kirim({ aksi: 'scan.batal' }); D.mintaScan = null; Object.keys(cache).forEach(k => cache[k].mintaScan = null); gambar(); } catch (e) { toast(e.message); b.disabled = false; } }
@@ -638,7 +639,7 @@ function vLain() {
     <button class="baris-menu" data-aksi="bagi"><span>Bagikan jadwal ke teman</span>${panah}</button>
     <button class="baris-menu" data-aksi="scan"><span>Minta scan C-CARE</span>${panah}</button>
     <a class="baris-menu" href="${esc(D.url)}" target="_blank" rel="noopener"><span>Buka Google Sheet</span><span class="chev">${IK.luar}</span></a>
-    ${CFG.mode === 'gas' ? '' : `${pasangPrompt ? `<button class="baris-menu" data-aksi="pasang"><span>Pasang di layar utama</span>${panah}</button>` : ''}<button class="baris-menu" data-aksi="hubung"><span>Sambungkan HP atau tablet (QR)</span>${panah}</button><button class="baris-menu bahaya" data-aksi="keluar"><span>Keluar dari HP ini</span></button>`}
+    ${CFG.mode === 'gas' ? '' : `${pasangPrompt ? `<button class="baris-menu" data-aksi="pasang"><span>Pasang di layar utama</span>${panah}</button>` : ''}${window.AlvisyaLabs && AlvisyaLabs.loginCcare ? `<button class="baris-menu" data-aksi="loginCcare"><span>Login C-CARE di HP ini<small>untuk scan dari HP</small></span>${panah}</button>` : ''}<button class="baris-menu" data-aksi="hubung"><span>Sambungkan HP atau tablet (QR)</span>${panah}</button><button class="baris-menu bahaya" data-aksi="keluar"><span>Keluar dari HP ini</span></button>`}
   </section></div>`;
 }
 
@@ -694,7 +695,8 @@ $('tbScan').onclick = () => {
   const ada = new Set(D.harian.map(h => h.t)), pilih = new Set();
   const hari = []; for (let i = 0; i < 7; i++) hari.push(geser(D.hariIni, -i));
   hari.slice(0, 3).forEach(t => { if (!ada.has(t) && hariDari(t) !== 0) pilih.add(t); });
-  bukaDialog('Minta scan C-CARE', `<p class="ket" style="margin:0">Scan dijalankan oleh ekstensi Scan Jasa di komputer Anda (Chrome menyala, C-CARE sudah login). Ekstensi memeriksa permintaan tiap ±5 menit, lalu hasilnya langsung dikirim ke Sheet.</p>
+  const diHp = !!(window.AlvisyaLabs && AlvisyaLabs.scan);   // APK AlvisyaLabs: scan di HP ini, di latar belakang
+  bukaDialog('Minta scan C-CARE', `<p class="ket" style="margin:0">${diHp ? 'Scan dijalankan di HP ini di latar belakang, memakai login C-CARE di aplikasi AlvisyaLabs (Lainnya → Login C-CARE di HP ini). Hasilnya langsung dikirim ke Sheet; pantau lewat notifikasi.' : 'Scan dijalankan oleh ekstensi Scan Jasa di komputer Anda (Chrome menyala, C-CARE sudah login). Ekstensi memeriksa permintaan tiap ±5 menit, lalu hasilnya langsung dikirim ke Sheet.'}</p>
     <div><span class="lbl">Tanggal</span><div class="chips" id="chipScan">${hari.map(t => `<button type="button" data-t="${t}" aria-pressed="${pilih.has(t)}">${tglPendek(t)}${ada.has(t) ? ' <small>· sudah ada</small>' : ''}</button>`).join('')}</div></div>
     ${D.mintaScan && (D.mintaScan.status === 'menunggu' || D.mintaScan.status === 'jalan') ? '<p class="ket" style="margin:0;color:var(--kuning)">Permintaan sebelumnya belum selesai — permintaan baru menggantikannya.</p>' : ''}
     <p class="ket" id="pesanScan" style="margin:0"></p>`, '<button class="tb kedua" value="tutup">Batal</button><button class="tb utama" type="button" id="kirimScan">Minta scan</button>');
@@ -702,7 +704,9 @@ $('tbScan').onclick = () => {
   $('kirimScan').onclick = async () => {
     if (!pilih.size) { $('pesanScan').textContent = 'Pilih minimal satu tanggal.'; return; }
     $('kirimScan').disabled = true;
-    try { const r = await api.kirim({ aksi: 'scan.minta', tanggal: [...pilih].sort() }); D.mintaScan = r.mintaScan; $('dlg').close(); tab = 'dash'; gambarTab(); gambar(); jadwalkanCek(); toast('Scan diminta — menunggu komputer.'); }
+    try { const r = await api.kirim({ aksi: 'scan.minta', tanggal: [...pilih].sort() }); D.mintaScan = r.mintaScan; $('dlg').close(); tab = 'dash'; gambarTab(); gambar(); jadwalkanCek();
+      if (diHp) { AlvisyaLabs.scan(JSON.stringify({ id: r.mintaScan.id, tanggal: r.mintaScan.tanggal, nama: D.nama, u: AKUN.u, k: AKUN.k })); toast('Scan berjalan di HP — pantau lewat notifikasi.'); }
+      else toast('Scan diminta — menunggu komputer.'); }
     catch (e) { $('pesanScan').textContent = 'Gagal: ' + e.message; $('kirimScan').disabled = false; }
   };
 };
