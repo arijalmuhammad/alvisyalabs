@@ -649,9 +649,11 @@ function vSetup() {
     <h1 style="font-size:22px">Sambungkan ke Sheet Anda</h1>
     <p class="sub" style="margin:8px 0 16px">Di Sheet: menu <b>Klinik → Pasang aplikasi HP</b>, lalu buka tautannya di HP ini. Atau salin <b>Kode pasang</b> (menu Klinik → Alamat &amp; kunci) dan tempel di bawah.</p>
     <p class="sub" style="margin:0 0 16px">Sudah tersambung di laptop? Buka CCare Plus di sana → <b>Lainnya → Sambungkan HP atau tablet (QR)</b>, lalu pindai dengan kamera.</p>
+    ${window.AlvisyaLabs ? '<button class="tb utama" id="pindaiQr" style="width:100%;margin:0 0 20px">Pindai kode QR</button>' : ''}
     <label class="lbl" for="kodePasang">Kode pasang atau tautan dasbor</label>
     <div class="salin"><input class="isian" id="kodePasang" placeholder="SJC1:… atau https://script.google.com/…?dasbor=…" autocomplete="off"><button class="tb utama" id="pasangKode">Sambungkan</button></div>
     <p class="ket" id="pesanPasang" style="margin-top:8px"></p></div>`;
+  if ($('pindaiQr')) $('pindaiQr').onclick = () => AlvisyaLabs.pindai();   // APK AlvisyaLabs: kamera → tersambung otomatis
   $('pasangKode').onclick = async () => {
     const a = bacaKodePasang($('kodePasang').value);
     if (!a) { $('pesanPasang').textContent = 'Kode tidak dikenali. Tempel kode SJC1:… atau tautan dasbor lengkap.'; return; }
