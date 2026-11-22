@@ -10,7 +10,7 @@ body{margin:0;background:var(--bg);color:var(--teks);font:16px/1.5 "Plus Jakarta
 .kembali{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--kartu-2);color:var(--teks);text-decoration:none;flex:none}
 .kembali svg{width:22px;height:22px}
 .tab{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}.tab::-webkit-scrollbar{display:none}
-.tab button{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--garis);background:var(--kartu);color:var(--teks);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.tab button{flex:none;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--garis);background:var(--kartu);color:var(--teks);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
 .tab button[aria-selected="true"]{background:var(--utama);border-color:var(--utama);color:var(--bg)}
 .kartu{background:var(--kartu);border-radius:22px;padding:18px;margin-bottom:12px}
 .kartu h2{font-size:17px;margin:0 0 4px}
@@ -18,7 +18,7 @@ body{margin:0;background:var(--bg);color:var(--teks);font:16px/1.5 "Plus Jakarta
 .lbl{display:block;font-size:14px;font-weight:600;margin:12px 0 6px}
 input,select,textarea{width:100%;min-height:48px;padding:10px 14px;border-radius:14px;border:1px solid var(--garis);background:var(--kartu-2);color:var(--teks);font:inherit;font-size:16px}
 textarea{min-height:96px;resize:vertical}
-input:focus,select:focus,textarea:focus{outline:3px solid var(--aksen);outline-offset:1px}
+input:focus,input:focus-within,select:focus,textarea:focus{outline:3px solid var(--aksen);outline-offset:1px}
 .baris{display:grid;grid-template-columns:1fr 1fr;gap:10px}.baris>*{min-width:0}
 .cek{display:flex;align-items:flex-start;gap:12px;min-height:48px;padding:10px 4px;border-top:1px solid var(--garis);cursor:pointer}
 .cek:first-of-type{border-top:0}
