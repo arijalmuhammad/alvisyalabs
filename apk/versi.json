@@ -1,7 +1,7 @@
 {
-  "versionCode": 8,
-  "versionName": "1.7",
+  "versionCode": 9,
+  "versionName": "1.8",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "a2b37169c2480865f3749e52177759261401c2d23156507317c5418726a81462",
-  "catatan": "Sidik jari / PIN AlvisyaLabs hanya diminta lagi bila HP sempat terkunci. Pindah aplikasi lalu kembali tidak perlu buka kunci ulang."
+  "sha256": "72a03762bee9e47a5cab4464a1228c8a3c0b12fc05a7dd8efe55c645d08d0afc",
+  "catatan": "Perbaikan kecil dan perapian. Buka kunci tetap hanya diminta bila HP sempat terkunci."
 }
