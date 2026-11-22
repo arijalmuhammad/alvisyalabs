@@ -234,6 +234,49 @@ details[open] .chev svg{transform:rotate(90deg)}
   .baris-judul .navper{margin-top:-4px}.baris-judul .navper .tb{border:0;background:none;color:var(--utama);padding:0 4px;min-height:44px}
 }
 @media (max-width:640px){.kepala{flex-wrap:nowrap}.merek small{display:block}.br .rp{min-width:96px}.strip4 b{font-size:18px}}
+/* ===== Gerak: hanya transform/opacity (dikerjakan GPU) — satu kurva pegas untuk semuanya ===== */
+:root{--pegas:cubic-bezier(.2,.9,.25,1.06);--keluar:cubic-bezier(.4,0,1,1)}
+@media (min-width:900px){nav#tabs{position:relative}}
+.penunjuk{position:absolute;left:0;bottom:0;height:3px;width:1px;border-radius:3px 3px 0 0;background:var(--utama);transform-origin:0 0;pointer-events:none;will-change:transform;transition:transform 300ms var(--pegas)}
+.tab[aria-current=page]{border-bottom-color:transparent}
+#isi{touch-action:pan-y}
+#isi>.masuk{will-change:transform}
+#isi>.masuk.ikut{animation:none!important;transition:none}
+#isi>.masuk.lepas{transition:transform 260ms var(--pegas),opacity 200ms ease}
+#isi>.masuk.diam{animation:none}
+.masuk:not(.diam) .batang i{transform-origin:50% 100%;animation:tumbuh 520ms var(--pegas) both;animation-delay:calc(var(--i,0) * 30ms + 80ms)}
+@keyframes tumbuh{from{transform:scaleY(0)}to{transform:none}}
+.batang{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;transition:transform 220ms var(--pegas)}
+.batang.pilih{transform:translateY(-4px)}.batang.pilih i{filter:brightness(1.12)}
+.info-batang{margin:10px 0 0;font-size:14px;color:var(--teks-2);min-height:21px}
+button,.baris-menu,.kartu.shift{transition:transform 120ms var(--pegas),background-color 160ms ease}
+button:active:not(:disabled),.baris-menu:active{transform:scale(.97)}
+.papan-riak{position:relative;overflow:hidden}
+.riak{position:absolute;border-radius:50%;background:currentColor;opacity:.14;transform:scale(0);pointer-events:none;animation:riak 520ms ease-out forwards}
+@keyframes riak{to{transform:scale(1);opacity:0}}
+dialog[open]{animation:dlgMasuk 260ms var(--pegas) both}
+@keyframes dlgMasuk{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+dialog.tutupan{animation:dlgKeluar 180ms var(--keluar) both}
+@keyframes dlgKeluar{to{opacity:0;transform:translateY(12px) scale(.98)}}
+::view-transition-old(root),::view-transition-new(root){animation-duration:240ms;animation-timing-function:var(--pegas)}
+@media (max-width:899px){
+  .penunjuk{top:4px;bottom:auto;height:32px;border-radius:16px;background:var(--utama-tipis)}
+  nav#tabs .tab{z-index:1}
+  dialog,dialog.lembar{margin:auto 0 0;max-width:100vw;width:100vw;border-radius:20px 20px 0 0;max-height:88vh;padding-bottom:env(safe-area-inset-bottom)}
+  dialog[open]{animation:lembarNaik 320ms var(--pegas) both}
+  dialog.tutupan{animation:lembarTurun 200ms var(--keluar) both}
+  dialog.tarik{animation:none;transition:none}
+  dialog.lepas{transition:transform 240ms var(--pegas)}
+  .dlg-kepala{position:relative;padding-top:22px;touch-action:none;cursor:grab}
+  .dlg-kepala::before{content:"";position:absolute;top:8px;left:50%;width:40px;height:5px;margin-left:-20px;border-radius:3px;background:var(--garis)}
+}
+@keyframes lembarNaik{from{transform:translateY(100%)}to{transform:none}}
+@keyframes lembarTurun{to{transform:translateY(100%)}}
+@media (prefers-reduced-motion:reduce){
+  .penunjuk,.batang,button,.baris-menu,#isi>.masuk.lepas{transition:none!important}
+  .masuk .batang i,dialog[open],dialog.tutupan,.riak{animation:none!important}
+  ::view-transition-old(root),::view-transition-new(root){animation:none}
+}
 </style>
 </head>
 <body>
@@ -406,27 +449,103 @@ function keTab(t) {
   const i = (x) => TAB.findIndex(([id]) => id === x);
   arahTab = Math.sign(i(t) - i(tab)); tab = t; gambarTab(); gambar(); window.scrollTo(0, 0);
 }
-/* geser kiri/kanan di layar HP = pindah tab; tabel, chip, kolom isian, dan kalender tetap bisa digulir sendiri */
+/* ===== Gerak: penunjuk tab, konten ikut jari, angka berhitung, grafik, lembar bawah, riak ===== */
+const Gerak = {
+  terakhir: '', angka: {},
+  diam: () => matchMedia('(prefers-reduced-motion: reduce)').matches,
+  getar(ms = 8) { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) { } },
+  /** penunjuk tab meluncur dari posisi lama ke tab aktif; prosen (-1..1) = ikut jari saat menggeser */
+  penunjuk(prosen = 0) {
+    const nav = $('tabs'); if (!nav) return;
+    let p = nav.querySelector('.penunjuk'); const baru = !p;
+    if (baru) { p = document.createElement('span'); p.className = 'penunjuk'; p.setAttribute('aria-hidden', 'true'); }
+    nav.appendChild(p);
+    const L = [...nav.querySelectorAll('.tab')], i = L.findIndex(b => b.getAttribute('aria-current') === 'page'); if (i < 0) return;
+    const a = L[i], b = L[Math.min(L.length - 1, Math.max(0, i + Math.sign(prosen)))], f = Math.abs(prosen);
+    const hp = innerWidth < 900, lebar = (e) => hp ? Math.min(64, e.offsetWidth - 8) : e.offsetWidth, kiri = (e) => e.offsetLeft + (e.offsetWidth - lebar(e)) / 2;
+    const x = kiri(a) + (kiri(b) - kiri(a)) * f, w = lebar(a) + (lebar(b) - lebar(a)) * f;
+    if (baru || Gerak.tanpaTransisi) p.style.transition = 'none';
+    p.style.transform = `translateX(${x}px) scaleX(${w})`;
+    if (baru || Gerak.tanpaTransisi) { void p.offsetWidth; p.style.transition = ''; }
+  },
+  /** View Transitions (Chrome 111+ / WebView Android): kartu “mekar” jadi halaman tujuan; selain itu langsung pindah */
+  transisi(f) { if (document.startViewTransition && !Gerak.diam()) document.startViewTransition(f); else f(); },
+  setelahGambar(sama) {
+    // angka Pendapatan bersih berhitung ke nilai baru
+    const v = document.querySelector('.pahlawan .v');
+    if (v && D) {
+      const kunci = 'bersih', ke = D.ringkas.bersih, dari = Gerak.angka[kunci];
+      Gerak.angka[kunci] = ke;
+      if (!sama && dari != null && dari !== ke && !Gerak.diam()) {
+        const t0 = performance.now(), dur = 420, ease = (t) => 1 - Math.pow(1 - t, 3);
+        const langkah = (t) => { const k = Math.min(1, (t - t0) / dur); v.textContent = rp(Math.round(dari + (ke - dari) * ease(k))); if (k < 1 && v.isConnected) requestAnimationFrame(langkah); };
+        requestAnimationFrame(langkah);
+      }
+    }
+    // batang grafik: ketuk = terangkat + rincian
+    document.querySelectorAll('.batang').forEach(btn => btn.onclick = () => {
+      const pilih = !btn.classList.contains('pilih'); document.querySelectorAll('.batang.pilih').forEach(x => x.classList.remove('pilih'));
+      btn.classList.toggle('pilih', pilih); const info = $('infoBatang'); if (info) info.textContent = pilih ? btn.dataset.info : 'Ketuk batang untuk rinciannya';
+    });
+  },
+};
+/* geser kiri/kanan di HP: halaman ikut jari (memantul di tab pertama/terakhir), lepas → pindah tab atau kembali */
 (() => {
-  let x0 = 0, y0 = 0, t0 = 0, aktif = false;
+  let x0 = 0, y0 = 0, t0 = 0, sumbu = '', el = null, lebar = 1;
+  const boleh = (t) => innerWidth < 900 && !!D && !document.querySelector('dialog[open]') && !t.closest('input, textarea, select, .tabel-bungkus, .chips, .grafik, [data-tanpa-geser]');
   addEventListener('touchstart', (e) => {
-    const t = e.target;
-    aktif = e.touches.length === 1 && innerWidth < 900 && !!D && !document.getElementById('kunci') && !document.querySelector('dialog[open]')
-      && !t.closest('input, textarea, select, .tabel-bungkus, .chips, .kal, [data-tanpa-geser]');
-    if (aktif) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now(); }
+    sumbu = ''; el = null;
+    if (e.touches.length !== 1 || !boleh(e.target)) return;
+    el = $('isi').firstElementChild; x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now(); lebar = innerWidth;
+  }, { passive: true });
+  addEventListener('touchmove', (e) => {
+    if (!el) return;
+    const dx = e.touches[0].clientX - x0, dy = e.touches[0].clientY - y0;
+    if (!sumbu) { if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return; sumbu = Math.abs(dx) > Math.abs(dy) * 1.2 ? 'x' : 'y'; if (sumbu === 'x') el.classList.add('ikut'); }
+    if (sumbu !== 'x') return;
+    const i = TAB.findIndex(([id]) => id === tab), ujung = (dx > 0 && i === 0) || (dx < 0 && i === TAB.length - 1);
+    const geserX = ujung ? dx * 0.25 : dx;   // efek pantul di ujung
+    el.style.transform = `translate3d(${geserX}px,0,0)`; el.style.opacity = String(1 - Math.min(0.35, Math.abs(geserX) / lebar));
+    if (!ujung) Gerak.tanpaTransisi = true, Gerak.penunjuk(-dx / lebar), Gerak.tanpaTransisi = false;
   }, { passive: true });
   addEventListener('touchend', (e) => {
-    if (!aktif) return; aktif = false;
-    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0, cepat = Date.now() - t0 < 600;
-    if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 2 || !cepat) return;
-    const i = TAB.findIndex(([id]) => id === tab), j = i + (dx < 0 ? 1 : -1);
-    if (TAB[j]) keTab(TAB[j][0]);
+    if (!el || sumbu !== 'x') { el = null; return; }
+    const dx = e.changedTouches[0].clientX - x0, v = dx / Math.max(1, Date.now() - t0), i = TAB.findIndex(([id]) => id === tab);
+    const j = i + (dx < 0 ? 1 : -1), pindah = TAB[j] && (Math.abs(dx) > lebar * 0.28 || (Math.abs(v) > 0.45 && Math.abs(dx) > 40));
+    el.classList.remove('ikut'); el.classList.add('lepas');
+    if (pindah) {
+      el.style.transform = `translate3d(${dx < 0 ? -lebar * 0.35 : lebar * 0.35}px,0,0)`; el.style.opacity = '0';
+      Gerak.getar(); setTimeout(() => keTab(TAB[j][0]), 110);
+    } else { el.style.transform = ''; el.style.opacity = ''; Gerak.penunjuk(); }
+    el = null;
   }, { passive: true });
+})();
+/* riak sentuh di baris menu & tombol kartu */
+addEventListener('pointerdown', (e) => {
+  const t = e.target.closest('.baris-menu, .kartu.shift, .menu-lain summary'); if (!t || Gerak.diam()) return;
+  t.classList.add('papan-riak'); const r = t.getBoundingClientRect(), d = Math.max(r.width, r.height) * 2.2, s = document.createElement('span');
+  s.className = 'riak'; s.style.cssText = `width:${d}px;height:${d}px;left:${e.clientX - r.left - d / 2}px;top:${e.clientY - r.top - d / 2}px`;
+  t.appendChild(s); setTimeout(() => s.remove(), 560);
+});
+addEventListener('resize', () => Gerak.penunjuk());
+/* lembar bawah (HP): tarik pegangan ke bawah untuk menutup; semua dialog tutup dengan animasi */
+(() => {
+  const dlg = $('dlg'); let y0 = 0, dy = 0, aktif = false, t0 = 0;
+  const tutupHalus = () => { if (!dlg.open) return; if (Gerak.diam()) return dlg.close(); dlg.classList.add('tutupan'); setTimeout(() => { dlg.classList.remove('tutupan', 'lepas'); dlg.style.transform = ''; dlg.close(); }, 190); };
+  dlg.addEventListener('cancel', (e) => { e.preventDefault(); tutupHalus(); });
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) tutupHalus(); const b = e.target.closest('button[value="tutup"]'); if (b) { e.preventDefault(); tutupHalus(); } });
+  dlg.addEventListener('pointerdown', (e) => { if (innerWidth >= 900 || !e.target.closest('.dlg-kepala') || e.target.closest('button')) return; aktif = true; y0 = e.clientY; dy = 0; t0 = Date.now(); dlg.classList.add('tarik'); dlg.setPointerCapture(e.pointerId); });
+  dlg.addEventListener('pointermove', (e) => { if (!aktif) return; dy = Math.max(0, e.clientY - y0); dlg.style.transform = `translate3d(0,${dy}px,0)`; });
+  const lepas = () => { if (!aktif) return; aktif = false; dlg.classList.remove('tarik');
+    if (dy > 110 || dy / Math.max(1, Date.now() - t0) > 0.6) { dlg.classList.add('lepas'); dlg.style.transform = 'translate3d(0,100%,0)'; setTimeout(() => { dlg.classList.remove('lepas'); dlg.style.transform = ''; dlg.close(); }, 230); }
+    else { dlg.classList.add('lepas'); dlg.style.transform = ''; setTimeout(() => dlg.classList.remove('lepas'), 250); } };
+  dlg.addEventListener('pointerup', lepas); dlg.addEventListener('pointercancel', lepas);
 })();
 function gambarTab() {
   const n = D ? D.permintaan.filter(x => x.status === 'Menunggu').length : 0;
   $('tabs').innerHTML = TAB.map(([id, l]) => `<button class="tab" data-t="${id}"${id === tab ? ' aria-current="page"' : ''}>${IK[id]}<span>${l}</span>${id === 'jadwal' && n ? `<span class="lencana" aria-label="${n} permintaan">${n}</span>` : ''}</button>`).join('');
   $('tabs').querySelectorAll('.tab').forEach(b => b.onclick = () => keTab(b.dataset.t));
+  Gerak.penunjuk();
 }
 async function muat(awal, diam, paksa) {
   awalDipilih = awal || '';
@@ -471,8 +590,8 @@ function navPeriode() {
 function pasangNav() {
   const p = D.periode, [y, m] = p.awal.split('-').map(Number), mulai = D.mulai;
   const iso = (yy, mm) => new Date(Date.UTC(yy, mm - 1, mulai)).toISOString().slice(0, 10);
-  if ($('mundur')) $('mundur').onclick = () => muat(iso(y, m - 1));
-  if ($('maju')) $('maju').onclick = () => muat(iso(y, m + 1));
+  if ($('mundur')) $('mundur').onclick = () => { arahTab = -1; muat(iso(y, m - 1)); };
+  if ($('maju')) $('maju').onclick = () => { arahTab = 1; muat(iso(y, m + 1)); };
 }
 const tautSheet = (gid, label) => `<a class="tb kedua" href="${esc(D.url)}#gid=${gid}" target="_blank" rel="noopener">${IK.ubah}${label || 'Ubah di Sheet'}</a>`;
 
@@ -482,7 +601,9 @@ function gambar() {
   if (!D) { $('isi').innerHTML = kerangka(); return; }
   $('nama').textContent = D.nama + ' · ' + D.tempat;
   const f = { dash: vDash, jadwal: vJadwal, harian: vHarian, pasien: vPasien, lain: vLain }[tab] || vDash;
-  $('isi').innerHTML = `<div class="masuk${arahTab > 0 ? ' dari-kanan' : arahTab < 0 ? ' dari-kiri' : ''}">${pitaOffline()}${f()}</div>`; arahTab = 0;
+  const kunciTampil = tab + '|' + D.periode.awal, sama = kunciTampil === Gerak.terakhir && !arahTab; Gerak.terakhir = kunciTampil;
+  $('isi').innerHTML = `<div class="masuk${sama ? ' diam' : arahTab > 0 ? ' dari-kanan' : arahTab < 0 ? ' dari-kiri' : ''}">${pitaOffline()}${f()}</div>`; arahTab = 0;
+  Gerak.setelahGambar(sama);
   pasangNav();
   const c = $('cariPasien'); if (c) c.oninput = () => cariPasien(c.value);
   pasangAksi();
@@ -526,7 +647,7 @@ function pitaAtas() {
 function pasangAksi() {
   document.querySelectorAll('[data-aksi]').forEach(b => b.onclick = async () => {
     const a = b.dataset.aksi;
-    if (a === 'keJadwal') { tab = 'jadwal'; gambarTab(); gambar(); }
+    if (a === 'keJadwal') Gerak.transisi(() => keTab('jadwal'));
     if (a === 'muatUlang') muat(awalDipilih, false, true);
     if (a === 'scan') $('tbScan').click();
     if (a === 'bagi') $('tbBagi').click();
@@ -565,7 +686,7 @@ function vDash() {
     + (s.eventN ? baris('Event', s.eventN, rp(ev)) + baris('Total diterima', '', rp(terima), 'tebal aksen') : '');
   const G = D.grafik.slice(Math.max(0, D.grafik.findIndex(g => g.terima > 0))), maks = Math.max(1, ...G.map(g => g.terima));
   const grafik = G.map((g, i) => { const m = +g.awal.slice(5, 7), ini = i === G.length - 1;
-    return `<div class="batang${ini ? ' ini' : ''}" title="${BULAN[m - 1]} ${g.awal.slice(0, 4)}: ${rp(g.terima)} · ${g.total} pasien"><span class="num">${g.terima ? (g.terima / 1e6).toFixed(2).replace('.', ',') : ''}</span><i style="height:${Math.round(g.terima / maks * 100)}px"></i><small>${BLN[m - 1]}</small></div>`; }).join('');
+    return `<button type="button" class="batang${ini ? ' ini' : ''}" style="--i:${i}" data-info="${BULAN[m - 1]} ${g.awal.slice(0, 4)}: ${rp(g.terima)} · ${g.total} pasien" aria-label="${BULAN[m - 1]} ${g.awal.slice(0, 4)}: ${rp(g.terima)} · ${g.total} pasien"><span class="num">${g.terima ? (g.terima / 1e6).toFixed(2).replace('.', ',') : ''}</span><i style="height:${Math.round(g.terima / maks * 100)}px"></i><small>${BLN[m - 1]}</small></button>`; }).join('');
   return kepalaHalaman(jp.judul, jp.sub) + statusData() + pitaAtas() + `
   <div class="ringkas">
   <section class="kartu pad pahlawan">
@@ -582,7 +703,7 @@ function vDash() {
   ${shift}
   <section class="kartu pad rinci-kartu"><div class="kepala-kartu"><h2>Rincian jasa</h2><span class="ket">jumlah × tarif</span></div>${rinci}
     <p class="ket" style="margin:12px 0 0">Akumulasi bersih ${D.tahun}: <b class="num" style="color:var(--teks)">${rp(D.akumulasi)}</b></p></section>
-  ${G.length > 1 ? `<section class="kartu pad"><div class="kepala-kartu"><h2>Diterima per periode</h2><span class="ket">Rp juta</span></div><div class="grafik" role="img" aria-label="Uang diterima per periode">${grafik}</div></section>` : ''}
+  ${G.length > 1 ? `<section class="kartu pad"><div class="kepala-kartu"><h2>Diterima per periode</h2><span class="ket">Rp juta</span></div><div class="grafik" role="group" aria-label="Uang diterima per periode">${grafik}</div><p class="info-batang num" id="infoBatang" aria-live="polite">Ketuk batang untuk rinciannya</p></section>` : ''}
   </div>`;
 }
 
@@ -798,7 +919,7 @@ async function bukaHubung() {
 }
 function bukaDialog(judul, isi, kaki) {
   $('dlgForm').innerHTML = `<div class="dlg-kepala"><h2 id="dlgJudul">${judul}</h2><button class="tutup" value="tutup" aria-label="Tutup">${IK.tutup}</button></div><div class="dlg-isi">${isi}</div>${kaki ? `<div class="dlg-kaki">${kaki}</div>` : ''}`;
-  $('dlg').classList.remove('lembar'); $('dlg').showModal();
+  $('dlg').classList.remove('lembar', 'tutupan'); $('dlg').style.transform = ''; $('dlg').showModal();
 }
 $('tbScan').onclick = () => {
   if (!D) return;
