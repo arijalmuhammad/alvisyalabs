@@ -1,7 +1,7 @@
 {
-  "versionCode": 10,
-  "versionName": "1.9",
+  "versionCode": 11,
+  "versionName": "1.10",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "09d5411a8deabcd238f6cee0b4fc1f0a559a17a267c70e644ac51c6355c598b9",
-  "catatan": "Getar dan bunyi klik saat menekan tombol (bunyi diam saat HP senyap). Tekan kembali 2x di halaman utama untuk keluar."
+  "sha256": "9ac3bb9e2c39841fc1be11f0b5de6fcd8fbae8d24ed1aeff7f49c87890e3a4c4",
+  "catatan": "Pantau telemedisin: panggilan layar penuh, getar, dan nada saat ada pasien telemedisin menunggu. Nyalakan di Pengaturan."
 }
