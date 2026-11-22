@@ -27,6 +27,11 @@
     return b64(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: dariB64(garam), iterations: 150000 }, k, 256));
   }
   const AL = () => window.AlvisyaLabs || {};
+  /** umpan sentuh di semua halaman: APK → getar + bunyi klik sistem (diam saat HP senyap/getar); peramban → getar saja */
+  window.AlvisyaUmpan = (jenis) => { try { if (AL().umpan) return AL().umpan(jenis || 'ketuk'); if (navigator.vibrate) navigator.vibrate(jenis === 'kuat' ? 20 : 8); } catch (e) { } };
+  document.addEventListener('click', (e) => {   // fase gelembung: klik yang dibatalkan penjaga geser (halaman muka) tidak sampai sini
+    if (e.target && e.target.closest && e.target.closest('button:not(:disabled), a[href], [role=button], [role=tab], [role=switch], summary')) window.AlvisyaUmpan();
+  });
   /** sidik jari: APK → BiometricPrompt Android; peramban → WebAuthn perangkat (Windows Hello, Touch ID, sidik jari Android) */
   const Bio = {
     apk: () => !!AL().sidikJari,
