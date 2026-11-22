@@ -321,8 +321,8 @@ let AKUN = bacaAkun();
 setTimeout(() => Bio.ada().then(b => { Bio.bisa = b; }), 0);
 function gasRun(fn, ...a) { return new Promise((ok, no) => google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn](...a)); }
 async function jawab(p) { const j = await p; if (!j || !j.ok) throw new Error((j && j.pesan) || 'Gagal'); return j; }
-/* ---------- kunci aplikasi: PIN 6 angka (+ sidik jari) sebelum data tampil. 5x salah → data di perangkat ini dihapus (Sheet tetap utuh) ---------- */
-const KUNCI_LS = 'ccareplus.kunci', KUNCI_MAKS = 5, KUNCI_JEDA = 60e3;   // terkunci lagi bila aplikasi ditinggal > 1 menit
+/* ---------- kunci aplikasi: PIN 4 angka (+ sidik jari) sebelum data tampil. 5x salah → data di perangkat ini dihapus (Sheet tetap utuh) ---------- */
+const KUNCI_LS = 'ccareplus.kunci', PIN_PANJANG = 4, KUNCI_MAKS = 5, KUNCI_JEDA = 60e3;   // terkunci lagi bila aplikasi ditinggal > 1 menit
 const bacaKunci = () => bacaLokal(KUNCI_LS);
 const b64 = u => btoa(String.fromCharCode(...new Uint8Array(u))), dariB64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 async function hashPin(pin, garam) {
@@ -366,11 +366,12 @@ function kunciApp(mode) {
   const logo = `<span class="logo"><svg class="ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span>`;
   const sidik = `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 11v3a8 8 0 0 1-1.5 4.7M8 9.5a4 4 0 0 1 8 0V12a12 12 0 0 1-.8 4.3M5 15.5V11a7 7 0 0 1 12.2-4.7M19 10.5v1.5a16 16 0 0 1-.5 4M9 21a11 11 0 0 0 2-6.5"/></svg>`;
   const K = () => bacaKunci() || {};
+  const pj = () => mode === 'buka' ? (K().pj || 6) : PIN_PANJANG;   // PIN lama (sebelum 4 angka) tetap 6 angka sampai diganti
   function gambarK(ket, salah) {
-    const judul = mode === 'buka' ? 'Masukkan PIN' : pertama ? 'Ulangi PIN' : 'Buat PIN 6 angka';
+    const judul = mode === 'buka' ? 'Masukkan PIN' : pertama ? 'Ulangi PIN' : 'Buat PIN ' + PIN_PANJANG + ' angka';
     const sub = mode === 'buka' ? 'CCare Plus terkunci.' : pertama ? 'Ketik sekali lagi untuk memastikan.' : 'PIN melindungi data jasa dan nama pasien di perangkat ini.';
     el.innerHTML = `${logo}<h1 id="kunciJudul">${judul}</h1><p class="ket${salah ? ' salah' : ''}" role="status">${esc(ket || sub)}</p>
-      <div class="titik" aria-label="${isi.length} dari 6 angka">${[0, 1, 2, 3, 4, 5].map(i => `<i class="${i < isi.length ? 'isi' : ''}"></i>`).join('')}</div>
+      <div class="titik" aria-label="${isi.length} dari ${pj()} angka">${[...Array(pj()).keys()].map(i => `<i class="${i < isi.length ? 'isi' : ''}"></i>`).join('')}</div>
       <div class="papan">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => `<button type="button" data-n="${n}">${n}</button>`).join('')}
         ${mode === 'buka' && K().bio ? `<button type="button" class="polos" data-k="bio" aria-label="Buka dengan sidik jari">${sidik}</button>` : '<button type="button" disabled aria-hidden="true"></button>'}
         <button type="button" data-n="0">0</button><button type="button" class="polos" data-k="hapus" aria-label="Hapus angka">Hapus</button></div>
@@ -382,16 +383,16 @@ function kunciApp(mode) {
   async function tekan(n) {
     if (sibuk || !el.querySelector('.papan')) return;
     if (n === 'h') { isi = isi.slice(0, -1); return gambarK(); }
-    if (isi.length >= 6) return;
+    if (isi.length >= pj()) return;
     isi += n; gambarK();
-    if (isi.length < 6) return;
+    if (isi.length < pj()) return;
     sibuk = true;
     try {
       if (mode === 'buat') {
         if (!pertama) { pertama = isi; isi = ''; return gambarK(); }
         if (isi !== pertama) { pertama = ''; isi = ''; return gambarK('PIN tidak sama. Buat ulang.', true); }
         const garam = b64(crypto.getRandomValues(new Uint8Array(16)));
-        simpanLokal(KUNCI_LS, { garam, hash: await hashPin(isi, garam), gagal: 0, bio: K().bio || null });
+        simpanLokal(KUNCI_LS, { garam, hash: await hashPin(isi, garam), pj: PIN_PANJANG, gagal: 0, bio: K().bio || null });
         return (await Bio.ada()) && !K().bio ? tawarBio() : tutup(true);
       }
       const k = K();
@@ -424,7 +425,13 @@ function kunciApp(mode) {
   return el.janji;
 }
 /** sebelum data tampil: buka kunci (atau buat PIN pertama kali) */
-const bukaAplikasi = () => CFG.mode === 'gas' || !AKUN ? Promise.resolve(true) : kunciApp(bacaKunci() ? 'buka' : 'buat');
+const bukaAplikasi = async () => {
+  if (CFG.mode === 'gas' || !AKUN) return true;
+  if (!bacaKunci()) return kunciApp('buat');
+  if (!await kunciApp('buka')) return false;
+  if ((bacaKunci().pj || 6) !== PIN_PANJANG) { toast('PIN sekarang ' + PIN_PANJANG + ' angka — buat PIN baru.'); return kunciApp('buat'); }   // pindah dari PIN 6 angka
+  return true;
+};
 
 /* ---------- database lokal: CCare Plus menyimpan & menghitung sendiri (mesin.js); Sheet hanya tempat sinkron ---------- */
 const DBL = {   // IndexedDB: 'S' = data mentah terakhir dari Sheet, 'antre' = perubahan yang belum terkirim
