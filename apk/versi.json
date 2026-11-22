@@ -1,7 +1,7 @@
 {
-  "versionCode": 13,
-  "versionName": "1.12",
+  "versionCode": 14,
+  "versionName": "1.13",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "8e9941e3fea46a2281d2bbb4e2793fca6f71f26ebd0849d6ef9647cdf64bc2c8",
-  "catatan": "Izin berjalan di latar belakang untuk panggilan telemedisin; uji panggilan langsung membuka layar panggilan."
+  "sha256": "7f371d9667e39b44a3aac0ff7c6c1492e987122a6ab5b89b3562a4b7b69a4301",
+  "catatan": "TTD Rencana Asuhan bisa dibuka dari AlvisyaLabs; izin latar belakang untuk panggilan telemedisin."
 }
