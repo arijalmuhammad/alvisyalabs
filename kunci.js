@@ -77,7 +77,7 @@
   const CSS = `.akunci{position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;
     background:var(--ak-bg);color:var(--ak-teks);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     padding:max(24px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));overflow-y:auto;
-    --ak-bg:#f4f8f7;--ak-teks:#0f2742;--ak-teks2:#4b6075;--ak-tombol:#fff;--ak-garis:#d3dfdd;--ak-aksen:#0f8a7e;--ak-tipis:#d6efeb;--ak-merah:#b42318}
+    --ak-bg:#f4f8f7;--ak-teks:#0f2742;--ak-teks2:#4b6075;--ak-tombol:#fff;--ak-garis:#d3dfdd;--ak-aksen:#0b7a72;--ak-tipis:#d6efeb;--ak-merah:#b42318}
   @media (prefers-color-scheme:dark){.akunci{--ak-bg:#0b1726;--ak-teks:#e8eef5;--ak-teks2:#a3b3c6;--ak-tombol:#12233a;--ak-garis:#24384f;--ak-aksen:#4fd1c1;--ak-tipis:#123b3a;--ak-merah:#f97066}}
   .akunci img{width:56px;height:56px}.akunci h1{font-size:21px;margin:4px 0 0;font-weight:800}.akunci .ak-ket{max-width:300px;min-height:20px;margin:0;color:var(--ak-teks2);font-size:15px}.akunci .ak-ket.salah{color:var(--ak-merah);font-weight:600}
   .ak-titik{display:flex;gap:16px;margin:8px 0 12px}.ak-titik i{width:15px;height:15px;border-radius:50%;border:2px solid var(--ak-aksen);transition:background-color .12s}.ak-titik i.isi{background:var(--ak-aksen)}
@@ -107,7 +107,7 @@
       const judul = mode === 'buka' ? 'AlvisyaLabs terkunci' : pertama ? 'Ulangi PIN' : 'Buat PIN ' + PANJANG + ' angka';
       const sub = mode === 'buka' ? 'Masukkan PIN' + (K().bio ? ' atau pakai sidik jari' : '') : pertama ? 'Ketik sekali lagi untuk memastikan.' : 'PIN melindungi data jasa dan nama pasien di perangkat ini.';
       el.innerHTML = `${logo}<h1 id="akJudul">${judul}</h1><p class="ak-ket${salah ? ' salah' : ''}" role="status">${esc(ket || sub)}</p>
-        <div class="ak-titik" aria-label="${isi.length} dari ${pj()} angka">${Array.from({ length: pj() }, (_, i) => `<i class="${i < isi.length ? 'isi' : ''}"></i>`).join('')}</div>
+        <div class="ak-titik" role="img" aria-label="${isi.length} dari ${pj()} angka">${Array.from({ length: pj() }, (_, i) => `<i class="${i < isi.length ? 'isi' : ''}"></i>`).join('')}</div>
         <div class="ak-papan">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `<button type="button" data-n="${n}">${n}</button>`).join('')}
           ${mode === 'buka' && K().bio ? `<button type="button" class="polos" data-k="bio" aria-label="Buka dengan sidik jari">${sidik}</button>` : '<button type="button" disabled aria-hidden="true"></button>'}
           <button type="button" data-n="0">0</button><button type="button" class="polos" data-k="hapus" aria-label="Hapus angka">Hapus</button></div>
