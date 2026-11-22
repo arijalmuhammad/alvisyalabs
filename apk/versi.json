@@ -1,7 +1,7 @@
 {
-  "versionCode": 12,
-  "versionName": "1.11",
+  "versionCode": 13,
+  "versionName": "1.12",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "5356f8b3683dedc8490affe63a23dd0dae8e2dfa8633b204025dcda9b1df5571",
-  "catatan": "Uji panggilan telemedisin kini langsung membuka layar panggilan; peringatan bila notifikasi AlvisyaLabs dimatikan."
+  "sha256": "8e9941e3fea46a2281d2bbb4e2793fca6f71f26ebd0849d6ef9647cdf64bc2c8",
+  "catatan": "Izin berjalan di latar belakang untuk panggilan telemedisin; uji panggilan langsung membuka layar panggilan."
 }
