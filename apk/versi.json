@@ -1,7 +1,7 @@
 {
-  "versionCode": 15,
-  "versionName": "1.14",
+  "versionCode": 16,
+  "versionName": "1.15",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "c642d943a4390a13b823096fc13724b2ebcef2ab9efb1aab2246d54378eda15d",
-  "catatan": "TTD Rencana Asuhan kini ada di dalam AlvisyaLabs — tidak perlu aplikasi terpisah."
+  "sha256": "b2261f3753037834ced2f84c038a2a74af2d4d5c2acd6e0fe4943f00c5282120",
+  "catatan": "TTD: tombol buka kunci (tahan 3 detik), layar hitam setelah 10 detik, sematan layar hanya sekali."
 }
