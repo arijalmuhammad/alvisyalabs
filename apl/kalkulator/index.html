@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F2742">
+<title>Kalkulator Klinis</title>
+<link rel="icon" href="../../ikon/alvisya-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="../gaya.css">
+</head>
+<body>
+<div class="bungkus">
+  <header class="kepala">
+    <a class="kembali" href="../../" aria-label="Kembali ke AlvisyaLabs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <h1>Kalkulator Klinis</h1>
+  </header>
+  <div class="tab" role="tablist" id="tab"></div>
+  <main id="isi"></main>
+  <p class="catatan">Alat bantu hitung; keputusan klinis tetap pada pemeriksa. Tidak ada data yang dikirim — semua dihitung di perangkat ini.</p>
+</div>
+<script>
+'use strict';
+/* Skor berbentuk daftar centang: [label, poin, keterangan?]; tafsir(skor) → [teks, tingkat 0 aman/1 waspada/2 tinggi] */
+const SKOR = {
+  curb: { nama: 'CURB-65', sub: 'Keparahan pneumonia komunitas', item: [
+      ['Confusion — kebingungan baru', 1], ['Urea > 7 mmol/L', 1, 'BUN > 19 mg/dL'], ['Respiratory rate ≥ 30 ×/menit', 1],
+      ['Blood pressure rendah', 1, 'Sistolik < 90 atau diastolik ≤ 60 mmHg'], ['Usia ≥ 65 tahun', 1]],
+    tafsir: (s) => s <= 1 ? ['Risiko rendah — pertimbangkan rawat jalan', 0] : s === 2 ? ['Risiko sedang — pertimbangkan rawat inap / observasi', 1] : ['Risiko tinggi — rawat inap; skor 4–5 pertimbangkan ICU', 2],
+    sumber: 'Lim WS dkk., Thorax 2003' },
+  qsofa: { nama: 'qSOFA', sub: 'Skrining risiko sepsis di luar ICU', item: [
+      ['Laju napas ≥ 22 ×/menit', 1], ['Perubahan status mental', 1, 'GCS < 15'], ['Tekanan darah sistolik ≤ 100 mmHg', 1]],
+    tafsir: (s) => s >= 2 ? ['≥ 2: risiko luaran buruk tinggi — evaluasi sepsis', 2] : ['< 2: tetap pantau bila curiga infeksi', 0],
+    sumber: 'Seymour CW dkk., JAMA 2016 (Sepsis-3)' },
+  centor: { nama: 'Centor (McIsaac)', sub: 'Faringitis streptokokus', item: [
+      ['Suhu > 38 °C', 1], ['Tidak ada batuk', 1], ['Pembesaran / nyeri KGB servikal anterior', 1], ['Tonsil bengkak atau eksudat', 1]],
+    usia: [['3–14 tahun', 1], ['15–44 tahun', 0], ['≥ 45 tahun', -1]],
+    tafsir: (s) => s <= 1 ? ['≤ 1: kemungkinan rendah — antibiotik umumnya tidak perlu', 0] : s <= 3 ? ['2–3: kemungkinan sedang — pertimbangkan uji cepat / kultur', 1] : ['≥ 4: kemungkinan tinggi — uji atau terapi empiris sesuai klinis', 2],
+    sumber: 'McIsaac WJ dkk., CMAJ 1998' },
+  wellsdvt: { nama: 'Wells TVD', sub: 'Kemungkinan trombosis vena dalam', item: [
+      ['Kanker aktif', 1], ['Paralisis, paresis, atau gips tungkai baru', 1], ['Tirah baring ≥ 3 hari atau operasi besar ≤ 12 minggu', 1],
+      ['Nyeri tekan sepanjang vena dalam', 1], ['Seluruh tungkai bengkak', 1], ['Betis bengkak > 3 cm dibanding sisi lain', 1],
+      ['Edema pitting pada tungkai yang sakit', 1], ['Vena superfisial kolateral (bukan varises)', 1], ['Riwayat TVD', 1],
+      ['Diagnosis lain sama atau lebih mungkin', -2]],
+    tafsir: (s) => s >= 2 ? ['≥ 2: TVD mungkin — lanjutkan USG / D-dimer sesuai alur', 2] : ['< 2: TVD kurang mungkin — D-dimer untuk menyingkirkan', 0],
+    sumber: 'Wells PS dkk., NEJM 2003' },
+  wellspe: { nama: 'Wells EP', sub: 'Kemungkinan emboli paru', item: [
+      ['Tanda klinis TVD', 3], ['EP diagnosis paling mungkin', 3], ['Nadi > 100 ×/menit', 1.5], ['Imobilisasi ≥ 3 hari atau operasi ≤ 4 minggu', 1.5],
+      ['Riwayat TVD / EP', 1.5], ['Hemoptisis', 1], ['Keganasan', 1]],
+    tafsir: (s) => s > 4 ? ['> 4: EP mungkin — pencitraan (CTPA)', 2] : ['≤ 4: EP kurang mungkin — D-dimer', 0],
+    sumber: 'Wells PS dkk., Thromb Haemost 2000' },
+};
+const TAB = [['gcs', 'GCS'], ['curb', 'CURB-65'], ['qsofa', 'qSOFA'], ['centor', 'Centor'], ['wellsdvt', 'Wells TVD'], ['wellspe', 'Wells EP'], ['imt', 'IMT'], ['egfr', 'eGFR'], ['cairan', 'Cairan rumatan']];
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const angka = (n, d = 1) => n.toLocaleString('id-ID', { maximumFractionDigits: d });
+const WARNA = ['var(--hijau)', 'var(--kuning)', 'var(--merah)'];
+const hasil = (nilai, teks, tingkat) => `<div class="hasil" role="status" aria-live="polite"><span class="angka">${nilai}</span><span class="tafsir">${tingkat != null ? `<b style="color:${tingkat === 0 ? '#9be3a8' : tingkat === 1 ? '#ffd08a' : '#ffb4ab'}">●</b> ` : ''}${esc(teks)}</span></div>`;
+let aktif = (location.hash || '#gcs').slice(1);
+
+function gambarTab() {
+  $('tab').innerHTML = TAB.map(([id, n]) => `<button type="button" role="tab" aria-selected="${id === aktif}" data-id="${id}">${n}</button>`).join('');
+  $('tab').querySelectorAll('button').forEach((b) => b.onclick = () => { aktif = b.dataset.id; history.replaceState(null, '', '#' + aktif); gambar(); b.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }); });
+}
+
+function gambarSkor(k) {
+  const S = SKOR[k];
+  $('isi').innerHTML = `<section class="kartu"><h2>${S.nama}</h2><p class="sub">${S.sub}</p>
+    ${S.item.map(([l, p, ket], i) => `<label class="cek"><input type="checkbox" data-p="${p}"><span><b>${esc(l)}</b>${ket ? `<small>${esc(ket)}</small>` : ''}</span><span class="poin">${p > 0 ? '+' : ''}${angka(p)}</span></label>`).join('')}
+    ${S.usia ? `<span class="lbl">Usia</span><div class="pilih">${S.usia.map(([l, p], i) => `<label><input type="radio" name="usia" data-p="${p}" ${i === 1 ? 'checked' : ''}>${l}<span style="margin-left:auto;color:var(--teks-2);font-weight:700">${p > 0 ? '+' : ''}${p}</span></label>`).join('')}</div>` : ''}
+    <p class="catatan">Sumber: ${S.sumber}</p></section><div id="out"></div>`;
+  const hitung = () => { const s = [...$('isi').querySelectorAll('input:checked')].reduce((t, e) => t + Number(e.dataset.p), 0); const [t, lv] = S.tafsir(s); $('out').innerHTML = hasil(angka(s), t, lv); };
+  $('isi').oninput = hitung; hitung();
+}
+
+function gambarGcs() {
+  const E = [[4, 'Spontan'], [3, 'Terhadap suara'], [2, 'Terhadap nyeri'], [1, 'Tidak ada']];
+  const V = [[5, 'Orientasi baik'], [4, 'Bingung'], [3, 'Kata-kata tidak tepat'], [2, 'Suara tidak bermakna'], [1, 'Tidak ada']];
+  const M = [[6, 'Menurut perintah'], [5, 'Melokalisasi nyeri'], [4, 'Menarik dari nyeri'], [3, 'Fleksi abnormal (dekortikasi)'], [2, 'Ekstensi (deserebrasi)'], [1, 'Tidak ada']];
+  const grup = (n, judul, L) => `<span class="lbl">${judul}</span><div class="pilih">${L.map(([p, l]) => `<label><input type="radio" name="${n}" value="${p}" ${p === L[0][0] ? 'checked' : ''}>${l}<span style="margin-left:auto;color:var(--teks-2);font-weight:700">${n.toUpperCase()}${p}</span></label>`).join('')}</div>`;
+  $('isi').innerHTML = `<section class="kartu"><h2>Glasgow Coma Scale</h2><p class="sub">Dewasa</p>${grup('e', 'Mata (E)', E)}${grup('v', 'Verbal (V)', V)}${grup('m', 'Motorik (M)', M)}<p class="catatan">Sumber: Teasdale & Jennett, Lancet 1974</p></section><div id="out"></div>`;
+  const hitung = () => { const g = (n) => Number($('isi').querySelector(`input[name=${n}]:checked`).value), e = g('e'), v = g('v'), m = g('m'), s = e + v + m;
+    $('out').innerHTML = hasil(s, `E${e} V${v} M${m} — ${s >= 13 ? 'cedera otak ringan (13–15)' : s >= 9 ? 'sedang (9–12)' : 'berat (≤ 8) — amankan jalan napas'}`, s >= 13 ? 0 : s >= 9 ? 1 : 2); };
+  $('isi').oninput = hitung; hitung();
+}
+
+function gambarImt() {
+  $('isi').innerHTML = `<section class="kartu"><h2>Indeks massa tubuh</h2><p class="sub">Klasifikasi Asia-Pasifik (WHO 2000)</p>
+    <div class="baris"><div><label class="lbl" for="bb">Berat (kg)</label><input id="bb" type="number" inputmode="decimal" min="1" max="400" step="0.1"></div>
+    <div><label class="lbl" for="tb">Tinggi (cm)</label><input id="tb" type="number" inputmode="decimal" min="30" max="250" step="0.1"></div></div></section><div id="out"></div>`;
+  const hitung = () => { const b = +$('bb').value, t = +$('tb').value / 100; if (!b || !t) { $('out').innerHTML = hasil('–', 'Isi berat dan tinggi'); return; }
+    const i = b / (t * t), [k, lv] = i < 18.5 ? ['Berat badan kurang', 1] : i < 23 ? ['Normal', 0] : i < 25 ? ['Berat badan lebih (berisiko)', 1] : i < 30 ? ['Obesitas I', 2] : ['Obesitas II', 2];
+    $('out').innerHTML = hasil(angka(i), k, lv); };
+  $('isi').oninput = hitung; hitung();
+}
+
+function gambarEgfr() {
+  $('isi').innerHTML = `<section class="kartu"><h2>eGFR</h2><p class="sub">CKD-EPI 2021 (tanpa koefisien ras), dewasa ≥ 18 tahun</p>
+    <div class="baris"><div><label class="lbl" for="kr">Kreatinin serum</label><input id="kr" type="number" inputmode="decimal" min="0.1" max="30" step="0.01"></div>
+    <div><label class="lbl" for="sat">Satuan</label><select id="sat"><option value="mg">mg/dL</option><option value="um">µmol/L</option></select></div></div>
+    <div class="baris"><div><label class="lbl" for="us">Usia (tahun)</label><input id="us" type="number" inputmode="numeric" min="18" max="120"></div>
+    <div><label class="lbl" for="jk">Jenis kelamin</label><select id="jk"><option value="l">Laki-laki</option><option value="p">Perempuan</option></select></div></div>
+    <p class="catatan">Sumber: Inker LA dkk., NEJM 2021</p></section><div id="out"></div>`;
+  const hitung = () => { let s = +$('kr').value; const u = +$('us').value, p = $('jk').value === 'p';
+    if (!s || !u) { $('out').innerHTML = hasil('–', 'Isi kreatinin dan usia'); return; }
+    if (u < 18) { $('out').innerHTML = hasil('–', 'Rumus ini untuk dewasa ≥ 18 tahun'); return; }
+    if ($('sat').value === 'um') s = s / 88.4;
+    const k = p ? 0.7 : 0.9, a = p ? -0.241 : -0.302, g = 142 * Math.min(s / k, 1) ** a * Math.max(s / k, 1) ** -1.2 * 0.9938 ** u * (p ? 1.012 : 1);
+    const [st, lv] = g >= 90 ? ['G1 (≥ 90) — normal/tinggi', 0] : g >= 60 ? ['G2 (60–89) — turun ringan', 0] : g >= 45 ? ['G3a (45–59)', 1] : g >= 30 ? ['G3b (30–44)', 1] : g >= 15 ? ['G4 (15–29)', 2] : ['G5 (< 15) — gagal ginjal', 2];
+    $('out').innerHTML = hasil(angka(g, 0), st + ' · mL/menit/1,73 m²', lv); };
+  $('isi').oninput = hitung; hitung();
+}
+
+function gambarCairan() {
+  $('isi').innerHTML = `<section class="kartu"><h2>Cairan rumatan</h2><p class="sub">Holliday–Segar (4-2-1)</p>
+    <label class="lbl" for="bbc">Berat badan (kg)</label><input id="bbc" type="number" inputmode="decimal" min="0.5" max="200" step="0.1">
+    <p class="catatan">100 mL/kg/hari untuk 10 kg pertama, 50 mL/kg untuk 10 kg berikutnya, 20 mL/kg untuk setiap kg di atas 20 kg. Sesuaikan dengan kondisi klinis (dehidrasi, gagal jantung/ginjal). Sumber: Holliday & Segar, Pediatrics 1957</p></section><div id="out"></div>`;
+  const hitung = () => { const b = +$('bbc').value; if (!b) { $('out').innerHTML = hasil('–', 'Isi berat badan'); return; }
+    const hari = Math.min(b, 10) * 100 + Math.max(Math.min(b, 20) - 10, 0) * 50 + Math.max(b - 20, 0) * 20;
+    $('out').innerHTML = hasil(angka(hari / 24, 0), `mL/jam · ${angka(hari, 0)} mL/hari`); };
+  $('isi').oninput = hitung; hitung();
+}
+
+function gambar() {
+  if (!TAB.some(([id]) => id === aktif)) aktif = 'gcs';
+  gambarTab(); $('isi').oninput = null;
+  if (SKOR[aktif]) gambarSkor(aktif); else ({ gcs: gambarGcs, imt: gambarImt, egfr: gambarEgfr, cairan: gambarCairan })[aktif]();
+}
+gambar();
+</script>
+</body>
+</html>
