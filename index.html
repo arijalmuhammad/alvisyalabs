@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AlvisyaLabs</title>
-<meta name="description" content="Halaman muka aplikasi AlvisyaLabs: CCare Plus, Jasa IPB, Antrean, AwanMedis, dan lainnya.">
+<meta name="description" content="Halaman muka aplikasi AlvisyaLabs: CCare Plus — jasa, jadwal, C-CARE IPB, antrean, dan PCare BPJS.">
 <meta name="theme-color" content="#0F2742">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="ikon/alvisya-192.png">
@@ -67,6 +67,7 @@ h1{margin:0;font-size:28px;font-weight:800;letter-spacing:-.3px}
 .ub .bintang{margin-right:8px}
 .kaki{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;justify-content:space-between;font-size:13px;color:var(--teks-2)}
 .kaki .hak{display:flex;align-items:center;gap:6px}
+.perbarui{min-height:44px;padding:0 12px;border:1px solid var(--garis);border-radius:8px;background:none;color:inherit;font:inherit;cursor:pointer}.perbarui[hidden]{display:none}
 .kaki .hak img{width:16px;height:15px}
 .sinkron{display:flex;align-items:center;gap:6px}
 .sinkron svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
@@ -87,7 +88,7 @@ h1{margin:0;font-size:28px;font-weight:800;letter-spacing:-.3px}
       <label for="cari">Cari aplikasi</label>
       <div class="kotak">
         <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--teks-2)"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4"/></svg>
-        <input id="cari" type="search" placeholder="mis. Jasa IPB" autocomplete="off">
+        <input id="cari" type="search" placeholder="mis. jasa, antrean" autocomplete="off">
       </div>
     </div>
   </div>
@@ -105,6 +106,7 @@ h1{margin:0;font-size:28px;font-weight:800;letter-spacing:-.3px}
     <div id="grup"></div>
     <footer class="kaki">
       <span class="sinkron" id="sinkron" role="status"></span>
+      <button type="button" class="perbarui" id="perbarui" hidden>Periksa pembaruan</button>
       <span class="hak"><span>©</span><img src="ikon/alvisya-simbol.svg" alt=""><span>Alvisya Labs by ArijalMuhammad</span></span>
     </footer>
   </div>
@@ -114,15 +116,10 @@ h1{margin:0;font-size:28px;font-weight:800;letter-spacing:-.3px}
 'use strict';
 /* Daftar aplikasi: tambah baris baru di sini. id: huruf kecil/angka/tanda hubung. */
 const APL = [
-  { id: 'ccare', g: 'Klinik IPB', nama: 'CCare Plus', ket: 'Dasbor jasa, jadwal, dan catatan dokter', url: 'ccareplus/', logo: 'ikon/ccare-plus.svg' },
-  { id: 'ccareipb', g: 'Klinik IPB', nama: 'C-CARE IPB', ket: 'Rekam medis klinik', url: 'https://c-care.ipb.ac.id/', d: 'M9 4h6v3H9zM7 5H5v15h14V5h-2M8 11h8M8 15h5' },
-  { id: 'antrean', g: 'Klinik IPB', nama: 'Antrean', ket: 'Nomor antrean harian', url: 'https://docs.google.com/spreadsheets/d/1_U6yGAANGuQXeqc5bOs_LZ2B3rTjcLjx1IBc1Cs_Nzw/edit', d: 'M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4zM10 7v10' },
-  { id: 'pcare', g: 'Klinik IPB', nama: 'PCare BPJS', ket: 'Situs resmi BPJS Kesehatan', url: 'https://pcarejkn.bpjs-kesehatan.go.id/eclaim/', d: 'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6' },
-  { id: 'awanmedis', g: 'Alvisya Labs', nama: 'AwanMedis', ket: 'RME klinik dan praktik', url: 'https://awanmedis.my.id/', d: 'M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z' },
-  { id: 'awandosis', g: 'Alvisya Labs', nama: 'AwanDosis', ket: 'Kalkulator dosis anak dan dewasa', url: 'https://pediatri.awanmedis.my.id/', d: 'M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7zM7 10l7 7' }
+  { id: 'ccare', g: 'Klinik IPB', nama: 'CCare Plus', ket: 'Jasa, jadwal, C-CARE IPB, antrean, dan PCare BPJS', url: 'ccareplus/', logo: 'ikon/ccare-plus.svg' }
 ];
 const GRUP = ['Klinik IPB', 'Alvisya Labs'];
-const MAKS = 4, BAWAAN = ['ccare', 'ccareipb'];
+const MAKS = 4, BAWAAN = ['ccare'];
 /* Sinkron favorit lintas perangkat (Apps Script milik dr. Arijal).
  * shortcut: token tertanam di halaman publik; siapa pun yang membacanya bisa mengubah daftar bintang (bukan data pasien). Ganti ke login bila perlu. */
 const SINKRON = { url: 'https://script.google.com/macros/s/AKfycbzfszQuJjcDD71vzMB9xGWTu40OIRn88PUDNywQpz5IOUcdR21M5lqhHz4W1FugC8Xx/exec', t: 'Y_FNdV9ztxHTbmdXO0e-teCiktKY9F8J' };
@@ -211,6 +208,7 @@ document.addEventListener('click', (e) => {
   kirim();
 });
 $('#cari').addEventListener('input', gambar);
+if (window.AlvisyaLabs && AlvisyaLabs.cekUpdate) { const t = $('#perbarui'); t.hidden = false; t.textContent = 'AlvisyaLabs ' + AlvisyaLabs.versi() + ' · Periksa pembaruan'; t.onclick = () => AlvisyaLabs.cekUpdate(); }   // hanya di APK 1.5+
 if (window.AlvisyaLabs && AlvisyaLabs.pindai) { $('#pindai').hidden = false; $('#pindai').onclick = () => AlvisyaLabs.pindai(); }   // hanya di APK: pemindai QR bawaan
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') tarik(); });
 window.addEventListener('online', tarik);
