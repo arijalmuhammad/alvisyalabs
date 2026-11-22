@@ -10,7 +10,7 @@
 <link rel="icon" href="../ikon/ccare-plus.svg">
 <link rel="apple-touch-icon" href="../ikon/alvisya-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
 :root{--utama:#0B7A72;--utama-tua:#075E58;--utama-tipis:#E6F4F2;--kanvas:#F5F8F8;--isian:#F2F6F6;--putih:#FFFFFF;--garis:#D5E0E0;--pemisah:#E3EBEA;
   --teks:#0F2742;--teks-2:#4F6478;--redup:#A9B6BC;--merah:#B91C1C;--merah-tipis:#FDF0F0;--kuning:#B45309;--kuning-tipis:#FEF3C7;--hijau:#3B7A1E;--hijau-tipis:#EAF4E2;
@@ -31,7 +31,7 @@ body.terkunci{overflow:hidden}
 .papan button:active{background:var(--utama-tipis)}.papan button.polos{border-color:transparent;background:none;font-size:14px;color:var(--utama)}.papan button:disabled{visibility:hidden}
 .kunci .tombol{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px}.kunci .tombol .tb{justify-content:center;min-height:48px}
 @media (max-height:600px){.papan{grid-template-columns:repeat(3,60px);gap:10px}.papan button{width:60px;height:60px;font-size:22px}}
-html,body{margin:0;background:var(--kanvas);color:var(--teks);font-family:'Source Sans 3',system-ui,sans-serif;font-size:15px;-webkit-font-smoothing:antialiased}
+html,body{margin:0;background:var(--kanvas);color:var(--teks);font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:15px;-webkit-font-smoothing:antialiased}
 a{color:var(--utama)}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--utama);outline-offset:2px}
@@ -47,7 +47,7 @@ nav::-webkit-scrollbar{display:none}
   transition:color 180ms ease,border-color 180ms ease,background-color 180ms ease}
 .tab:hover{background:var(--isian);color:var(--teks)}
 .tab[aria-current=page]{color:var(--utama);border-bottom-color:var(--utama)}
-.tb{display:inline-flex;align-items:center;gap:6px;border-radius:8px;font-weight:600;font-size:14px;padding:8px 14px;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background-color 160ms ease}
+.tb{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;border-radius:8px;font-weight:600;font-size:14px;padding:8px 14px;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background-color 160ms ease}
 .tb.utama{background:var(--utama);color:#fff;border:1px solid var(--utama)}.tb.utama:hover{background:var(--utama-tua)}
 .tb.kedua{background:var(--putih);color:var(--teks);border:1px solid var(--garis)}.tb.kedua:hover{background:var(--isian)}
 .tb:disabled{color:var(--redup);cursor:default;background:var(--putih)}
@@ -104,11 +104,13 @@ tr.ini td{background:var(--utama-tipis)}
 .pesan.galat{background:var(--merah-tipis);color:var(--merah)}
 .masuk{animation:masuk 220ms ease-out both}
 @keyframes masuk{from{opacity:.0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.masuk.dari-kanan{animation:dariKanan 240ms cubic-bezier(.2,.8,.2,1) both}.masuk.dari-kiri{animation:dariKiri 240ms cubic-bezier(.2,.8,.2,1) both}
+@keyframes dariKanan{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}@keyframes dariKiri{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
 .memuat{opacity:.55;transition:opacity 160ms ease}
 .segaran{position:fixed;left:0;right:0;top:0;height:3px;z-index:30;background:linear-gradient(90deg,transparent,var(--utama),transparent);background-size:40% 100%;background-repeat:no-repeat;animation:segar 1.1s linear infinite}
 .segaran[hidden]{display:none}@keyframes segar{from{background-position:-40% 0}to{background-position:140% 0}}
 @media (prefers-reduced-motion:reduce){.segaran{animation:none;background:var(--utama);opacity:.5}}
-@media (prefers-reduced-motion:reduce){.masuk{animation:none}.batang i,.tab{transition:none}}
+@media (prefers-reduced-motion:reduce){.masuk,.masuk.dari-kanan,.masuk.dari-kiri{animation:none}.batang i,.tab{transition:none}}
 @media (max-width:1100px){.merek small{display:none}.merek{flex:0 0 auto}.tab{padding:18px 9px 16px}}
 @media (max-width:640px){.kepala{padding:0 16px;flex-wrap:wrap}.merek{flex:1 1 100%;padding-bottom:0}.merek small{display:block}.strip{grid-template-columns:repeat(3,minmax(0,1fr))}.strip>div:first-child{grid-column:1/-1}.strip>div{padding:12px 16px}main{padding:16px}.tab{padding:14px 10px 12px}.strip .v{font-size:24px}.sel{height:42px}.sel .s{display:none}.grafik{gap:4px}.sumbu{gap:4px}.batang span{font-size:10px}
   .sembunyi-hp{display:none}td,th{padding:8px 10px}.dua{gap:16px}.pad{padding:16px}}
@@ -156,7 +158,7 @@ dialog[open]{animation:masuk 200ms ease-out both}
 .dlg-kaki{display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid var(--pemisah)}
 .tutup{background:none;border:0;padding:6px;border-radius:8px;cursor:pointer;color:var(--teks-2)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chips button{border:1px solid var(--garis);background:var(--putih);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
+.chips button{border:1px solid var(--garis);background:var(--putih);border-radius:999px;min-height:44px;padding:0 14px;font-size:14px;cursor:pointer}
 .chips button[aria-pressed=true]{background:var(--utama-tipis);border-color:var(--utama);color:var(--utama);font-weight:600}
 .chips button small{color:var(--teks-2);font-weight:400}
 .salin{display:flex;gap:8px}.salin input{flex:1}
@@ -204,7 +206,7 @@ label.lbl{display:block;font-size:13px;font-weight:600;color:var(--teks-2);margi
 .hr.jumlah{background:var(--isian)}
 .tumpuk{display:flex;flex-direction:column;gap:16px}
 .alat-pasien{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}.alat-pasien .cari{max-width:none;min-height:44px;font-size:16px}
-.chips button{min-height:36px}
+.chips button{min-height:44px}
 .grup{overflow:hidden}.grup-kep{display:flex;justify-content:space-between;gap:8px;padding:10px 16px;background:var(--isian)}
 .ps{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;padding:10px 16px;border-top:1px solid var(--pemisah)}
 .ps .no{color:var(--teks-2);text-align:right}
@@ -463,7 +465,7 @@ function sinkron() {
       const r = await jawab(fetch((CFG.api || AKUN.u) + '?' + new URLSearchParams({ aksi: 'sinkron', kunci: AKUN.k, ver: S ? S.ver : '' })).then(r => r.json()));
       let berubah;
       if (r.sama) { berubah = JSON.stringify([S.mintaScan, S.bagi]) !== JSON.stringify([r.mintaScan, r.bagi]); S.mintaScan = r.mintaScan; S.bagi = r.bagi; }
-      else { berubah = true; S = Object.assign(r, { u: AKUN.u }); }
+      else { berubah = !S || S.ver !== r.ver || JSON.stringify([S.mintaScan, S.bagi]) !== JSON.stringify([r.mintaScan, r.bagi]); S = Object.assign(r, { u: AKUN.u }); }   // versi sama = tidak digambar ulang (cegah putaran muat↔sinkron)
       S.diambil = Date.now(); await simpanS();
       return berubah;
     } catch (e) { if (/Aksi tidak dikenal/.test(e.message)) LAMA = true; throw e; }
@@ -509,10 +511,34 @@ let pasangPrompt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); pasangPrompt = e; if (D) gambar(); });
 
 function toast(t) { const e = $('toast'); e.textContent = t; e.hidden = false; clearTimeout(toast.j); toast.j = setTimeout(() => { e.hidden = true; }, 3200); }
+let arahTab = 0;
+/** pindah tab; arah animasi mengikuti urutan tab (seperti geser halaman di Android) */
+function keTab(t) {
+  if (!TAB.some(([id]) => id === t) || t === tab) return;
+  const i = (x) => TAB.findIndex(([id]) => id === x);
+  arahTab = Math.sign(i(t) - i(tab)); tab = t; gambarTab(); gambar(); window.scrollTo(0, 0);
+}
+/* geser kiri/kanan di layar HP = pindah tab; tabel, chip, kolom isian, dan kalender tetap bisa digulir sendiri */
+(() => {
+  let x0 = 0, y0 = 0, t0 = 0, aktif = false;
+  addEventListener('touchstart', (e) => {
+    const t = e.target;
+    aktif = e.touches.length === 1 && innerWidth < 900 && !!D && !document.getElementById('kunci') && !document.querySelector('dialog[open]')
+      && !t.closest('input, textarea, select, .tabel-bungkus, .chips, .kal, [data-tanpa-geser]');
+    if (aktif) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now(); }
+  }, { passive: true });
+  addEventListener('touchend', (e) => {
+    if (!aktif) return; aktif = false;
+    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0, cepat = Date.now() - t0 < 600;
+    if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 2 || !cepat) return;
+    const i = TAB.findIndex(([id]) => id === tab), j = i + (dx < 0 ? 1 : -1);
+    if (TAB[j]) keTab(TAB[j][0]);
+  }, { passive: true });
+})();
 function gambarTab() {
   const n = D ? D.permintaan.filter(x => x.status === 'Menunggu').length : 0;
   $('tabs').innerHTML = TAB.map(([id, l]) => `<button class="tab" data-t="${id}"${id === tab ? ' aria-current="page"' : ''}>${IK[id]}<span>${l}</span>${id === 'jadwal' && n ? `<span class="lencana" aria-label="${n} permintaan">${n}</span>` : ''}</button>`).join('');
-  $('tabs').querySelectorAll('.tab').forEach(b => b.onclick = () => { tab = b.dataset.t; gambarTab(); gambar(); window.scrollTo(0, 0); });
+  $('tabs').querySelectorAll('.tab').forEach(b => b.onclick = () => keTab(b.dataset.t));
 }
 async function muat(awal, diam, paksa) {
   awalDipilih = awal || '';
@@ -568,7 +594,7 @@ function gambar() {
   if (!D) { $('isi').innerHTML = kerangka(); return; }
   $('nama').textContent = D.nama + ' · ' + D.tempat;
   const f = { dash: vDash, jadwal: vJadwal, harian: vHarian, pasien: vPasien, lain: vLain }[tab] || vDash;
-  $('isi').innerHTML = `<div class="masuk">${pitaOffline()}${f()}</div>`;
+  $('isi').innerHTML = `<div class="masuk${arahTab > 0 ? ' dari-kanan' : arahTab < 0 ? ' dari-kiri' : ''}">${pitaOffline()}${f()}</div>`; arahTab = 0;
   pasangNav();
   const c = $('cariPasien'); if (c) c.oninput = () => cariPasien(c.value);
   pasangAksi();
@@ -798,7 +824,7 @@ function vPasien() {
   if (!Array.isArray(D.pasien)) { muatPasien(); return kepalaHalaman('Pasien · ' + bln, 'Memuat daftar pasien…') + '<section class="kartu pad">' + '<i class="sk" style="width:100%;height:14px"></i>'.repeat(6) + '</section>'; }
   const J = { poli: 'Poli', ugd: 'IGD', mcu: 'MCU', tele: 'Tele' }, F = [['semua', 'Semua'], ['poli', 'Poli'], ['ugd', 'IGD'], ['mcu', 'MCU'], ['tele', 'Tele']];
   const L = D.pasien.filter(p => fPasien === 'semua' || p.jenis === fPasien), grup = [];
-  L.slice().reverse().forEach(p => { const k = p.t + '|' + p.shift; let g = grup[grup.length - 1]; if (!g || g.k !== k) grup.push(g = { k, t: p.t, shift: p.shift, isi: [] }); g.isi.unshift(p); });
+  L.slice().sort((a, b) => a.t < b.t ? 1 : a.t > b.t ? -1 : (a.shift < b.shift ? 1 : a.shift > b.shift ? -1 : 0)).forEach(p => { const k = p.t + '|' + p.shift; let g = grup[grup.length - 1]; if (!g || g.k !== k) grup.push(g = { k, t: p.t, shift: p.shift, isi: [] }); g.isi.push(p); });   // terbaru dulu; urutan dalam shift = urutan scan
   const html = grup.map(g => `<section class="kartu grup" data-cari="${esc((tglPendek(g.t) + ' ' + tglPanjang(g.t) + ' ' + g.shift).toLowerCase())}"><div class="grup-kep"><b>${tglPendek(g.t)} · ${esc(g.shift)}</b><span class="ket num">${g.isi.length} pasien</span></div>
     ${g.isi.map((p, i) => `<div class="ps num"><span class="no">${i + 1}</span><span>${esc(p.nama)}</span><span class="ket">${J[p.jenis] || esc(p.jenis)}</span></div>`).join('')}</section>`).join('');
   return kepalaHalaman('Pasien · ' + bln, D.pasien.length + ' hasil scan C-CARE · periode berjalan saja', tautSheet(D.gid.pasien, 'Buka di Sheet')) +
@@ -821,7 +847,7 @@ function vLain() {
   <section class="kartu"><div class="kepala-kartu pad-kep"><h2>Rekap bulanan ${D.tahun}</h2><span class="ket">tgl ${D.mulai} s.d. ${D.mulai - 1}</span></div>
     <div class="tabel-bungkus"><table><thead><tr><th class="k">Bulan</th><th>Hari</th><th>Pasien</th><th>Diterima</th></tr></thead><tbody>${bul}</tbody>
     <tfoot><tr><td class="k">Jumlah</td><td class="num">${t.hari}</td><td class="num">${n0(t.total)}</td><td class="num">${rp(t.terima)}</td></tr></tfoot></table></div>
-    <p class="ket" style="margin:0;padding:8px 16px 12px">Diterima = bersih setelah PPh + uang event. <a href="${esc(D.url)}#gid=${D.gid.bulanan}" target="_blank" rel="noopener">Rincian di Sheet</a></p></section>
+    <p class="ket" style="margin:0;padding:8px 16px 12px">Diterima = bersih setelah PPh + uang event. <a href="${esc(D.url)}#gid=${D.gid.bulanan}" target="_blank" rel="noopener" style="display:inline-block;padding:12px 0;margin:-12px 0">Rincian di Sheet</a></p></section>
   <section class="kartu menu-lain"><h2 class="pad-kep">Aplikasi klinik</h2>
     <a class="baris-menu" href="https://c-care.ipb.ac.id/" target="_blank" rel="noopener"><span>C-CARE IPB<small>Rekam medis klinik</small></span><span class="chev">${IK.luar}</span></a>
     <a class="baris-menu" href="https://docs.google.com/spreadsheets/d/1_U6yGAANGuQXeqc5bOs_LZ2B3rTjcLjx1IBc1Cs_Nzw/edit" target="_blank" rel="noopener"><span>Antrean<small>Nomor antrean harian</small></span><span class="chev">${IK.luar}</span></a>
