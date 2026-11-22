@@ -1,7 +1,7 @@
 {
-  "versionCode": 9,
-  "versionName": "1.8",
+  "versionCode": 10,
+  "versionName": "1.9",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "72a03762bee9e47a5cab4464a1228c8a3c0b12fc05a7dd8efe55c645d08d0afc",
-  "catatan": "Perbaikan kecil dan perapian. Buka kunci tetap hanya diminta bila HP sempat terkunci."
+  "sha256": "09d5411a8deabcd238f6cee0b4fc1f0a559a17a267c70e644ac51c6355c598b9",
+  "catatan": "Getar dan bunyi klik saat menekan tombol (bunyi diam saat HP senyap). Tekan kembali 2x di halaman utama untuk keluar."
 }
