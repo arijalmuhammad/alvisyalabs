@@ -27,6 +27,22 @@
     return b64(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: dariB64(garam), iterations: 150000 }, k, 256));
   }
   const AL = () => window.AlvisyaLabs || {};
+  /** halaman selalu versi terbaru: APK menyimpan halaman di memori, jadi saat aplikasi dibuka lagi cek ETag halaman ini;
+   *  bila berubah di server → muat ulang. Tidak memuat ulang saat dialog terbuka atau sedang mengetik (isian tidak hilang). */
+  (() => {
+    let tanda = null, terakhir = 0;
+    const cek = async () => {
+      try {
+        const r = await fetch(location.pathname, { method: 'HEAD', cache: 'no-store' });
+        const t = r.ok && (r.headers.get('etag') || r.headers.get('last-modified')); if (!t) return;
+        const sibuk = document.querySelector('dialog[open], #akunci') || /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '');
+        if (tanda && t !== tanda && !sibuk) return location.reload();
+        if (!tanda) tanda = t;
+      } catch (e) { }
+    };
+    cek();
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - terakhir > 10000) { terakhir = Date.now(); cek(); } });
+  })();
   /** umpan sentuh di semua halaman: APK → getar + bunyi klik sistem (diam saat HP senyap/getar); peramban → getar saja */
   window.AlvisyaUmpan = (jenis) => { try { if (AL().umpan) return AL().umpan(jenis || 'ketuk'); if (navigator.vibrate) navigator.vibrate(jenis === 'kuat' ? 20 : 8); } catch (e) { } };
   document.addEventListener('click', (e) => {   // fase gelembung: klik yang dibatalkan penjaga geser (halaman muka) tidak sampai sini
