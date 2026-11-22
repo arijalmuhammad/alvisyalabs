@@ -1,7 +1,7 @@
 {
-  "versionCode": 11,
-  "versionName": "1.10",
+  "versionCode": 12,
+  "versionName": "1.11",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "9ac3bb9e2c39841fc1be11f0b5de6fcd8fbae8d24ed1aeff7f49c87890e3a4c4",
-  "catatan": "Pantau telemedisin: panggilan layar penuh, getar, dan nada saat ada pasien telemedisin menunggu. Nyalakan di Pengaturan."
+  "sha256": "5356f8b3683dedc8490affe63a23dd0dae8e2dfa8633b204025dcda9b1df5571",
+  "catatan": "Uji panggilan telemedisin kini langsung membuka layar panggilan; peringatan bila notifikasi AlvisyaLabs dimatikan."
 }
