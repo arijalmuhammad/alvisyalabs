@@ -18,6 +18,19 @@
 @media (prefers-color-scheme:dark){:root{--utama:#2BB3A8;--utama-tua:#5FD0C6;--utama-tipis:#123A38;--kanvas:#0E1A1F;--isian:#15252B;--putih:#12212A;--garis:#2A3D44;--pemisah:#1E3036;
   --teks:#E6EEF0;--teks-2:#9DB0B8;--redup:#5D717A;--merah:#F08080;--merah-tipis:#2A1A1D;--kuning:#E0A458;--kuning-tipis:#2C2416;--hijau:#7FC86A;--hijau-tipis:#1C2E17;--c1:#16403D;--c2:#1F6E66;--c3:#2BB3A8;--c3-teks:#0E1A1F}}
 *{box-sizing:border-box}
+.kembali{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:44px;height:44px;margin-left:-12px;border-radius:8px;color:var(--teks);text-decoration:none}
+.kembali:hover,.kembali:focus-visible{background:var(--isian)}
+.kembali-teks{display:inline-flex;align-items:center;gap:2px;min-height:44px;margin:-8px 0 8px -8px;color:var(--utama);font-weight:600;text-decoration:none}
+body.terkunci{overflow:hidden}
+.kunci{position:fixed;inset:0;z-index:60;background:var(--kanvas);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;
+  padding:max(24px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));overflow-y:auto}
+.kunci h1{font-size:20px;margin:4px 0 0}.kunci .ket{max-width:300px;min-height:20px;margin:0}.kunci .ket.salah{color:var(--merah);font-weight:600}
+.titik{display:flex;gap:14px;margin:6px 0 10px}.titik i{width:14px;height:14px;border-radius:50%;border:2px solid var(--utama)}.titik i.isi{background:var(--utama)}
+.papan{display:grid;grid-template-columns:repeat(3,72px);gap:14px}
+.papan button{width:72px;height:72px;border-radius:50%;border:1px solid var(--garis);background:var(--putih);color:var(--teks);font:inherit;font-size:26px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.papan button:active{background:var(--utama-tipis)}.papan button.polos{border-color:transparent;background:none;font-size:14px;color:var(--utama)}.papan button:disabled{visibility:hidden}
+.kunci .tombol{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px}.kunci .tombol .tb{justify-content:center;min-height:48px}
+@media (max-height:600px){.papan{grid-template-columns:repeat(3,60px);gap:10px}.papan button{width:60px;height:60px;font-size:22px}}
 html,body{margin:0;background:var(--kanvas);color:var(--teks);font-family:'Source Sans 3',system-ui,sans-serif;font-size:15px;-webkit-font-smoothing:antialiased}
 a{color:var(--utama)}
 button{font:inherit;color:inherit}
@@ -232,6 +245,7 @@ details[open] .chev svg{transform:rotate(90deg)}
 <header id="kepala">
   <div class="kepala">
     <div class="merek">
+      <a class="kembali" id="keMuka" href="../" aria-label="Kembali ke AlvisyaLabs" title="Kembali ke AlvisyaLabs"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
       <span class="logo"><svg class="ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span>
       <span style="min-width:0"><b>CCare Plus</b><small id="nama">memuat…</small></span>
     </div>
@@ -304,8 +318,114 @@ function bacaAkun() {
   return lama;
 }
 let AKUN = bacaAkun();
+setTimeout(() => Bio.ada().then(b => { Bio.bisa = b; }), 0);
 function gasRun(fn, ...a) { return new Promise((ok, no) => google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn](...a)); }
 async function jawab(p) { const j = await p; if (!j || !j.ok) throw new Error((j && j.pesan) || 'Gagal'); return j; }
+/* ---------- kunci aplikasi: PIN 6 angka (+ sidik jari) sebelum data tampil. 5x salah → data di perangkat ini dihapus (Sheet tetap utuh) ---------- */
+const KUNCI_LS = 'ccareplus.kunci', KUNCI_MAKS = 5, KUNCI_JEDA = 60e3;   // terkunci lagi bila aplikasi ditinggal > 1 menit
+const bacaKunci = () => bacaLokal(KUNCI_LS);
+const b64 = u => btoa(String.fromCharCode(...new Uint8Array(u))), dariB64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function hashPin(pin, garam) {
+  const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveBits']);
+  return b64(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: dariB64(garam), iterations: 150000 }, k, 256));
+}
+/** sidik jari: APK → BiometricPrompt Android (jembatan AlvisyaLabs); peramban → WebAuthn perangkat (Windows Hello, Touch ID, sidik jari Android) */
+const Bio = {
+  apk: () => !!(window.AlvisyaLabs && AlvisyaLabs.sidikJari),
+  async ada() {
+    if (Bio.apk()) return !!AlvisyaLabs.adaSidikJari();
+    try { return !!(window.PublicKeyCredential && await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()); } catch (e) { return false; }
+  },
+  async daftar() {
+    if (Bio.apk()) return await Bio.periksa('apk') ? 'apk' : null;
+    const c = await navigator.credentials.create({ publicKey: { challenge: crypto.getRandomValues(new Uint8Array(32)), rp: { name: 'CCare Plus' },
+      user: { id: crypto.getRandomValues(new Uint8Array(16)), name: 'ccareplus', displayName: 'CCare Plus' }, pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+      authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'discouraged' }, timeout: 60000 } }).catch(() => null);
+    return c ? b64(c.rawId) : null;
+  },
+  periksa(id) {
+    if (Bio.apk()) return new Promise(ok => { window.__sidikJari = h => { window.__sidikJari = null; ok(!!h); }; AlvisyaLabs.sidikJari(); });
+    return navigator.credentials.get({ publicKey: { challenge: crypto.getRandomValues(new Uint8Array(32)), allowCredentials: [{ type: 'public-key', id: dariB64(id) }], userVerification: 'required', timeout: 60000 } }).then(() => true, () => false);
+  },
+};
+/** hapus semua data CCare Plus di perangkat ini (dipakai Keluar, Lupa PIN, 5x salah) */
+function hapusDataPerangkat() {
+  S = false; ANTRE = []; simpanS();
+  simpanLokal(SIMPAN, null); simpanLokal(KUNCI_LS, null); Object.keys(localStorage).filter(k => /^jasaipb\./.test(k)).forEach(k => simpanLokal(k, null));
+  AKUN = null; D = null; Object.keys(cache).forEach(k => delete cache[k]);
+}
+/** layar kunci. mode: 'buka' (minta PIN), 'buat' (PIN baru, lalu tawarkan sidik jari). Selesai = resolve(true); data dihapus = resolve(false) */
+function kunciApp(mode) {
+  const lama = $('kunci'); if (lama) return lama.janji;
+  const dl = $('dlg'); if (dl && dl.open) dl.close();   // dialog modal ada di lapisan teratas
+  const el = document.createElement('div'); el.id = 'kunci'; el.className = 'kunci'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-labelledby', 'kunciJudul');
+  document.body.appendChild(el); document.body.classList.add('terkunci');
+  let isi = '', pertama = '', sibuk = false, selesai;
+  el.janji = new Promise(r => { selesai = r; });
+  const tutup = hasil => { document.removeEventListener('keydown', ketik); el.remove(); document.body.classList.remove('terkunci'); selesai(hasil); };
+  const logo = `<span class="logo"><svg class="ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span>`;
+  const sidik = `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 11v3a8 8 0 0 1-1.5 4.7M8 9.5a4 4 0 0 1 8 0V12a12 12 0 0 1-.8 4.3M5 15.5V11a7 7 0 0 1 12.2-4.7M19 10.5v1.5a16 16 0 0 1-.5 4M9 21a11 11 0 0 0 2-6.5"/></svg>`;
+  const K = () => bacaKunci() || {};
+  function gambarK(ket, salah) {
+    const judul = mode === 'buka' ? 'Masukkan PIN' : pertama ? 'Ulangi PIN' : 'Buat PIN 6 angka';
+    const sub = mode === 'buka' ? 'CCare Plus terkunci.' : pertama ? 'Ketik sekali lagi untuk memastikan.' : 'PIN melindungi data jasa dan nama pasien di perangkat ini.';
+    el.innerHTML = `${logo}<h1 id="kunciJudul">${judul}</h1><p class="ket${salah ? ' salah' : ''}" role="status">${esc(ket || sub)}</p>
+      <div class="titik" aria-label="${isi.length} dari 6 angka">${[0, 1, 2, 3, 4, 5].map(i => `<i class="${i < isi.length ? 'isi' : ''}"></i>`).join('')}</div>
+      <div class="papan">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => `<button type="button" data-n="${n}">${n}</button>`).join('')}
+        ${mode === 'buka' && K().bio ? `<button type="button" class="polos" data-k="bio" aria-label="Buka dengan sidik jari">${sidik}</button>` : '<button type="button" disabled aria-hidden="true"></button>'}
+        <button type="button" data-n="0">0</button><button type="button" class="polos" data-k="hapus" aria-label="Hapus angka">Hapus</button></div>
+      ${mode === 'buka' ? '<button type="button" class="tb-teks" data-k="lupa" style="min-height:44px">Lupa PIN?</button>' : ''}`;
+    el.querySelectorAll('[data-n]').forEach(b => b.onclick = () => tekan(b.dataset.n));
+    el.querySelectorAll('[data-k]').forEach(b => b.onclick = () => ({ hapus: () => tekan('h'), bio: pakaiBio, lupa: tanyaLupa })[b.dataset.k]());
+  }
+  function ketik(e) { if (/^[0-9]$/.test(e.key)) tekan(e.key); else if (e.key === 'Backspace') tekan('h'); }
+  async function tekan(n) {
+    if (sibuk || !el.querySelector('.papan')) return;
+    if (n === 'h') { isi = isi.slice(0, -1); return gambarK(); }
+    if (isi.length >= 6) return;
+    isi += n; gambarK();
+    if (isi.length < 6) return;
+    sibuk = true;
+    try {
+      if (mode === 'buat') {
+        if (!pertama) { pertama = isi; isi = ''; return gambarK(); }
+        if (isi !== pertama) { pertama = ''; isi = ''; return gambarK('PIN tidak sama. Buat ulang.', true); }
+        const garam = b64(crypto.getRandomValues(new Uint8Array(16)));
+        simpanLokal(KUNCI_LS, { garam, hash: await hashPin(isi, garam), gagal: 0, bio: K().bio || null });
+        return (await Bio.ada()) && !K().bio ? tawarBio() : tutup(true);
+      }
+      const k = K();
+      if (await hashPin(isi, k.garam) === k.hash) { k.gagal = 0; simpanLokal(KUNCI_LS, k); return tutup(true); }
+      k.gagal = (k.gagal || 0) + 1; simpanLokal(KUNCI_LS, k); isi = '';
+      if (k.gagal >= KUNCI_MAKS) { hapusDataPerangkat(); toast('PIN salah 5 kali — data CCare Plus di perangkat ini dihapus. Sambungkan ulang.'); return tutup(false); }
+      gambarK('PIN salah. Sisa ' + (KUNCI_MAKS - k.gagal) + ' percobaan sebelum data di perangkat ini dihapus.', true);
+    } finally { sibuk = false; }
+  }
+  async function pakaiBio() {
+    if (sibuk) return; sibuk = true;
+    const ok = await Bio.periksa(K().bio); sibuk = false;
+    if (ok) { const k = K(); k.gagal = 0; simpanLokal(KUNCI_LS, k); tutup(true); } else gambarK('Sidik jari tidak dikenali. Pakai PIN.', true);
+  }
+  function tawarBio() {
+    el.innerHTML = `${logo}<h1 id="kunciJudul">Pakai sidik jari?</h1><p class="ket">Buka CCare Plus dengan sidik jari atau kunci layar perangkat. PIN tetap bisa dipakai.</p>
+      <div class="tombol"><button type="button" class="tb utama" id="bioYa">Aktifkan sidik jari</button><button type="button" class="tb kedua" id="bioNanti">Nanti saja</button></div>`;
+    $('bioNanti').onclick = () => tutup(true);
+    $('bioYa').onclick = async () => { $('bioYa').disabled = true; const id = await Bio.daftar(); if (id) { const k = K(); k.bio = id; simpanLokal(KUNCI_LS, k); toast('Sidik jari aktif.'); } else toast('Sidik jari belum aktif — tetap pakai PIN.'); tutup(true); };
+  }
+  function tanyaLupa() {
+    el.innerHTML = `${logo}<h1 id="kunciJudul">Lupa PIN?</h1><p class="ket">Data CCare Plus di perangkat ini akan dihapus. Data di Sheet tetap aman; setelah itu sambungkan ulang lewat kode QR atau kode pasang.</p>
+      <div class="tombol"><button type="button" class="tb utama" id="lupaHapus" style="background:var(--merah);border-color:var(--merah)">Hapus data di perangkat ini</button><button type="button" class="tb kedua" id="lupaBatal">Batal</button></div>`;
+    $('lupaBatal').onclick = () => gambarK();
+    $('lupaHapus').onclick = () => { hapusDataPerangkat(); tutup(false); };
+  }
+  document.addEventListener('keydown', ketik);
+  gambarK();
+  if (mode === 'buka' && K().bio) setTimeout(pakaiBio, 300);   // langsung tawarkan sidik jari
+  return el.janji;
+}
+/** sebelum data tampil: buka kunci (atau buat PIN pertama kali) */
+const bukaAplikasi = () => CFG.mode === 'gas' || !AKUN ? Promise.resolve(true) : kunciApp(bacaKunci() ? 'buka' : 'buat');
+
 /* ---------- database lokal: CCare Plus menyimpan & menghitung sendiri (mesin.js); Sheet hanya tempat sinkron ---------- */
 const DBL = {   // IndexedDB: 'S' = data mentah terakhir dari Sheet, 'antre' = perubahan yang belum terkirim
   buka() { return this.p || (this.p = new Promise((ok, no) => { const r = indexedDB.open('ccareplus', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); })); },
@@ -491,10 +611,12 @@ function pasangAksi() {
     if (a === 'bagi') $('tbBagi').click();
     if (a === 'hubung') bukaHubung();
     if (a === 'loginCcare') AlvisyaLabs.loginCcare();
+    if (a === 'ubahPin') { if (await kunciApp('buka')) { if (await kunciApp('buat')) toast('PIN diganti.'); } else gambar(); }
+    if (a === 'bio') { const k = bacaKunci(); if (k.bio) { k.bio = null; simpanLokal(KUNCI_LS, k); toast('Sidik jari dimatikan.'); } else { const id = await Bio.daftar(); if (id) { k.bio = id; simpanLokal(KUNCI_LS, k); toast('Sidik jari aktif.'); } else toast('Sidik jari belum bisa diaktifkan.'); } gambar(); }
     if (a === 'fp') { fPasien = b.dataset.f; gambar(); const c = $('cariPasien'); if (c && cariPasien.q) { c.value = cariPasien.q; cariPasien(cariPasien.q); } }
     if (a === 'pasang' && pasangPrompt) { pasangPrompt.prompt(); pasangPrompt = null; gambar(); }
     if (a === 'batalScan') { b.disabled = true; try { await api.kirim({ aksi: 'scan.batal' }); D.mintaScan = null; Object.keys(cache).forEach(k => cache[k].mintaScan = null); gambar(); } catch (e) { toast(e.message); b.disabled = false; } }
-    if (a === 'keluar') { S = false; ANTRE = []; simpanS(); simpanLokal(SIMPAN, null); Object.keys(localStorage).filter(k => /^jasaipb\./.test(k)).forEach(k => simpanLokal(k, null)); AKUN = null; D = null; gambar(); }
+    if (a === 'keluar') { hapusDataPerangkat(); gambar(); }
     if (a === 'jawab') {
       const baris = b.closest('.minta'); baris.querySelectorAll('button').forEach(x => x.disabled = true);
       try { const r = await api.kirim({ aksi: 'permintaan.jawab', id: b.dataset.id, terima: b.dataset.terima === '1' }); toast(r.status === 'Diterima' ? 'Diterima — Jadwal Shift diperbarui.' : 'Permintaan ditolak.'); muat(awalDipilih, true); }
@@ -693,6 +815,11 @@ function vLain() {
     <div class="tabel-bungkus"><table><thead><tr><th class="k">Bulan</th><th>Hari</th><th>Pasien</th><th>Diterima</th></tr></thead><tbody>${bul}</tbody>
     <tfoot><tr><td class="k">Jumlah</td><td class="num">${t.hari}</td><td class="num">${n0(t.total)}</td><td class="num">${rp(t.terima)}</td></tr></tfoot></table></div>
     <p class="ket" style="margin:0;padding:8px 16px 12px">Diterima = bersih setelah PPh + uang event. <a href="${esc(D.url)}#gid=${D.gid.bulanan}" target="_blank" rel="noopener">Rincian di Sheet</a></p></section>
+  <section class="kartu menu-lain"><h2 class="pad-kep">Aplikasi klinik</h2>
+    <a class="baris-menu" href="https://c-care.ipb.ac.id/" target="_blank" rel="noopener"><span>C-CARE IPB<small>Rekam medis klinik</small></span><span class="chev">${IK.luar}</span></a>
+    <a class="baris-menu" href="https://docs.google.com/spreadsheets/d/1_U6yGAANGuQXeqc5bOs_LZ2B3rTjcLjx1IBc1Cs_Nzw/edit" target="_blank" rel="noopener"><span>Antrean<small>Nomor antrean harian</small></span><span class="chev">${IK.luar}</span></a>
+    <a class="baris-menu" href="https://pcarejkn.bpjs-kesehatan.go.id/eclaim/" target="_blank" rel="noopener"><span>PCare BPJS<small>Situs resmi BPJS Kesehatan</small></span><span class="chev">${IK.luar}</span></a>
+  </section>
   <section class="kartu menu-lain"><h2 class="pad-kep">Pengaturan</h2>
     <details><summary><span>Tarif jasa${tk ? `<small>${rp(tk.hadir)} hadir · ${rp(tk.pagi)} poli · ${rp(tk.igd)} IGD · ${rp(tk.mcu)} MCU · ${rp(tk.tele)} tele</small>` : ''}</span>${panah}</summary>
       <div class="tabel-bungkus"><table><thead><tr><th class="k">Berlaku mulai</th><th>Hadir</th><th>Pagi</th><th>IGD</th><th>Siang</th><th>MCU</th><th>Tele</th><th>PPh</th></tr></thead><tbody>${tarif}</tbody></table></div></details>
@@ -701,14 +828,14 @@ function vLain() {
     <button class="baris-menu" data-aksi="bagi"><span>Bagikan jadwal ke teman</span>${panah}</button>
     <button class="baris-menu" data-aksi="scan"><span>Minta scan C-CARE</span>${panah}</button>
     <a class="baris-menu" href="${esc(D.url)}" target="_blank" rel="noopener"><span>Buka Google Sheet</span><span class="chev">${IK.luar}</span></a>
-    ${CFG.mode === 'gas' ? '' : `${pasangPrompt ? `<button class="baris-menu" data-aksi="pasang"><span>Pasang di layar utama</span>${panah}</button>` : ''}${window.AlvisyaLabs && AlvisyaLabs.loginCcare ? `<button class="baris-menu" data-aksi="loginCcare"><span>Login C-CARE di HP ini<small>untuk scan dari HP</small></span>${panah}</button>` : ''}<button class="baris-menu" data-aksi="hubung"><span>Sambungkan HP atau tablet (QR)</span>${panah}</button><button class="baris-menu bahaya" data-aksi="keluar"><span>Keluar dari HP ini</span></button>`}
+    ${CFG.mode === 'gas' ? '' : `${pasangPrompt ? `<button class="baris-menu" data-aksi="pasang"><span>Pasang di layar utama</span>${panah}</button>` : ''}${bacaKunci() ? `<button class="baris-menu" data-aksi="ubahPin"><span>Ubah PIN</span>${panah}</button>${Bio.bisa ? `<button class="baris-menu" data-aksi="bio"><span>Sidik jari<small>${bacaKunci().bio ? 'Aktif — ketuk untuk mematikan' : 'Mati — ketuk untuk mengaktifkan'}</small></span>${panah}</button>` : ''}` : ''}${window.AlvisyaLabs && AlvisyaLabs.loginCcare ? `<button class="baris-menu" data-aksi="loginCcare"><span>Login C-CARE di HP ini<small>untuk scan dari HP</small></span>${panah}</button>` : ''}<button class="baris-menu" data-aksi="hubung"><span>Sambungkan HP atau tablet (QR)</span>${panah}</button><button class="baris-menu bahaya" data-aksi="keluar"><span>Keluar dari HP ini</span></button>`}
   </section></div>`;
 }
 
 /* ---------- belum tersambung (aplikasi HP pertama kali dibuka) ---------- */
 function vSetup() {
   $('kepala').hidden = true;
-  $('isi').innerHTML = `<div class="setup masuk"><div class="merek" style="padding:0 0 16px"><span class="logo"><svg class="ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span><b style="font-size:20px">CCare Plus</b></div>
+  $('isi').innerHTML = `<div class="setup masuk"><a class="tb-teks kembali-teks" href="../"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span>AlvisyaLabs</span></a><div class="merek" style="padding:0 0 16px"><span class="logo"><svg class="ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span><b style="font-size:20px">CCare Plus</b></div>
     <h1 style="font-size:22px">Sambungkan ke Sheet Anda</h1>
     <p class="sub" style="margin:8px 0 16px">Di Sheet: menu <b>Klinik → Pasang aplikasi HP</b>, lalu buka tautannya di HP ini. Atau salin <b>Kode pasang</b> (menu Klinik → Alamat &amp; kunci) dan tempel di bawah.</p>
     <p class="sub" style="margin:0 0 16px">Sudah tersambung di laptop? Buka CCare Plus di sana → <b>Lainnya → Sambungkan HP atau tablet (QR)</b>, lalu pindai dengan kamera.</p>
@@ -721,7 +848,7 @@ function vSetup() {
     const a = bacaKodePasang($('kodePasang').value);
     if (!a) { $('pesanPasang').textContent = 'Kode tidak dikenali. Tempel kode SJC1:… atau tautan dasbor lengkap.'; return; }
     AKUN = a; S = null; $('pesanPasang').textContent = 'Menyambungkan…';
-    try { const d = await api.dasbor(''); simpanLokal(SIMPAN, a); cache[''] = d; D = d; gambarTab(); gambar(); }
+    try { const d = await api.dasbor(''); simpanLokal(SIMPAN, a); if (!await bukaAplikasi()) return gambar(); cache[''] = d; D = d; gambarTab(); gambar(); }
     catch (e) { AKUN = null; $('pesanPasang').textContent = 'Gagal: ' + e.message; }
   };
 }
@@ -800,9 +927,15 @@ $('tbBagi').onclick = () => {
 };
 
 gambarTab(); gambar();
-if (CFG.mode === 'gas' || AKUN) muat('');
-window.addEventListener('hashchange', () => { const a = CFG.mode === 'gas' ? null : bacaKodePasang(decodeURIComponent(location.hash.slice(1))); if (a) { AKUN = bacaAkun(); S = null; D = null; Object.keys(cache).forEach(k => delete cache[k]); gambar(); muat(''); } });
+if (CFG.mode === 'gas') muat('');
+else if (AKUN) bukaAplikasi().then(ok => { if (ok && AKUN) muat(''); else gambar(); });
+window.addEventListener('hashchange', () => { const a = CFG.mode === 'gas' ? null : bacaKodePasang(decodeURIComponent(location.hash.slice(1))); if (a) { AKUN = bacaAkun(); S = null; D = null; Object.keys(cache).forEach(k => delete cache[k]); gambar(); bukaAplikasi().then(ok => { if (ok && AKUN) muat(''); else gambar(); }); } });
 window.addEventListener('online', () => { if (D && AKUN && CFG.mode !== 'gas') muat(awalDipilih, true); });   // sinyal kembali → kirim antrean & tarik
+let ditinggal = 0;   // kunci lagi setelah ditinggal > 1 menit
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { ditinggal = Date.now(); return; }
+  if (CFG.mode !== 'gas' && AKUN && bacaKunci() && ditinggal && Date.now() - ditinggal > KUNCI_JEDA) kunciApp('buka').then(ok => { if (!ok) gambar(); });
+});
 document.addEventListener('visibilitychange', () => { if (!document.hidden && D && (CFG.mode === 'gas' || AKUN)) muat(awalDipilih, true); });
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(() => {});
 </script>
