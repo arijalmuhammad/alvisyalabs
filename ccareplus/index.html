@@ -457,7 +457,7 @@ function keTab(t) {
 const Gerak = {
   terakhir: '', angka: {},
   diam: () => matchMedia('(prefers-reduced-motion: reduce)').matches,
-  getar(ms = 8) { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) { } },
+  getar(ms = 8) { try { if (window.AlvisyaUmpan) AlvisyaUmpan(); else if (navigator.vibrate) navigator.vibrate(ms); } catch (e) { } },
   /** penunjuk tab meluncur dari posisi lama ke tab aktif; prosen (-1..1) = ikut jari saat menggeser */
   penunjuk(prosen = 0) {
     const nav = $('tabs'); if (!nav) return;
