@@ -436,7 +436,11 @@ const api = {
   },
 };
 
-let tab = 'dash', D = null, awalDipilih = '', offline = '', diambil = 0, segar = false, fPasien = 'semua';
+let tab = (() => {   // pintasan dari halaman muka AlvisyaLabs: ccareplus/#jadwal → langsung ke tab Jadwal
+  const t = location.hash.slice(1);
+  if (!['dash', 'jadwal', 'harian', 'pasien', 'lain'].includes(t)) return 'dash';
+  history.replaceState(null, '', location.pathname + location.search); return t;
+})(), D = null, awalDipilih = '', offline = '', diambil = 0, segar = false, fPasien = 'semua';
 const cache = {};
 let pasangPrompt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); pasangPrompt = e; if (D) gambar(); });
