@@ -24,6 +24,7 @@ a{color:inherit}
 .kepala .lebar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
 .merek{display:flex;align-items:center;gap:10px;flex-grow:1;font-size:20px;font-weight:800;letter-spacing:-.2px}
 .merek img{width:30px;height:28px}
+.pindai{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--garis);border-radius:8px;background:var(--kartu);color:var(--teks);font-weight:700;font-size:15px;font-family:inherit;cursor:pointer}.pindai[hidden]{display:none}.pindai svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .cari{display:flex;flex-direction:column;gap:4px;flex:1 1 280px;max-width:360px}
 .cari label{font-size:13px;font-weight:600;color:var(--teks-2)}
 .kotak{display:flex;align-items:center;gap:8px;height:44px;padding:0 12px;border:1px solid var(--garis);border-radius:8px;background:var(--isian)}
@@ -81,6 +82,7 @@ h1{margin:0;font-size:28px;font-weight:800;letter-spacing:-.3px}
 <header class="kepala">
   <div class="lebar">
     <div class="merek"><img src="ikon/alvisya-simbol.svg" alt=""><span>AlvisyaLabs</span></div>
+    <button type="button" id="pindai" class="pindai" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M8 9h2v2H8zM14 9h2v2h-2zM8 13h2v2H8zM14 13h2v2h-2z"/></svg>Pindai QR</button>
     <div class="cari">
       <label for="cari">Cari aplikasi</label>
       <div class="kotak">
@@ -209,6 +211,7 @@ document.addEventListener('click', (e) => {
   kirim();
 });
 $('#cari').addEventListener('input', gambar);
+if (window.AlvisyaLabs && AlvisyaLabs.pindai) { $('#pindai').hidden = false; $('#pindai').onclick = () => AlvisyaLabs.pindai(); }   // hanya di APK: pemindai QR bawaan
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') tarik(); });
 window.addEventListener('online', tarik);
 
