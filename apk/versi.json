@@ -1,7 +1,7 @@
 {
- "versionCode": 7,
- "versionName": "1.6",
- "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
- "sha256": "02ac0ce2e2565386afe5491aa4abf7ac523ba9f4c180d6a87e0b688da7c1ebd5",
- "catatan": "Uji PCare di dalam aplikasi (CCare Plus → Lainnya → Uji PCare di aplikasi)."
+  "versionCode": 8,
+  "versionName": "1.7",
+  "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
+  "sha256": "a2b37169c2480865f3749e52177759261401c2d23156507317c5418726a81462",
+  "catatan": "Sidik jari / PIN AlvisyaLabs hanya diminta lagi bila HP sempat terkunci. Pindah aplikasi lalu kembali tidak perlu buka kunci ulang."
 }
