@@ -1,7 +1,7 @@
 /* Gaya bersama aplikasi kecil AlvisyaLabs (apl/…): token sama dengan halaman muka. */
-:root{--bg:#f4f8f7;--kartu:#fff;--kartu-2:#edf3f2;--teks:#0f2742;--teks-2:#4b6075;--garis:#d3dfdd;--utama:#0f2742;--aksen:#0f8a7e;--aksen-tipis:#d6efeb;--merah:#b42318;--kuning:#b45309;--hijau:#2f7a1e;color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1726;--kartu:#12233a;--kartu-2:#172b45;--teks:#e8eef5;--teks-2:#a3b3c6;--garis:#24384f;--utama:#cfe3f5;--aksen:#4fd1c1;--aksen-tipis:#123b3a;--merah:#f97066;--kuning:#f0a04b;--hijau:#7cc35a;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0b1726;--kartu:#12233a;--kartu-2:#172b45;--teks:#e8eef5;--teks-2:#a3b3c6;--garis:#24384f;--utama:#cfe3f5;--aksen:#4fd1c1;--aksen-tipis:#123b3a;--merah:#f97066;--kuning:#f0a04b;--hijau:#7cc35a;color-scheme:dark}
+:root{--bg:#f4f8f7;--kartu:#fff;--kartu-2:#edf3f2;--teks:#0f2742;--teks-2:#4b6075;--garis:#d3dfdd;--utama:#0f2742;--aksen:#0b7a72;--garis-isian:#7d8f95;--aksen-tipis:#d6efeb;--merah:#b42318;--kuning:#b45309;--hijau:#2f7a1e;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1726;--kartu:#12233a;--kartu-2:#172b45;--teks:#e8eef5;--teks-2:#a3b3c6;--garis:#24384f;--garis-isian:#6a8094;--utama:#cfe3f5;--aksen:#4fd1c1;--aksen-tipis:#123b3a;--merah:#f97066;--kuning:#f0a04b;--hijau:#7cc35a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1726;--kartu:#12233a;--kartu-2:#172b45;--teks:#e8eef5;--teks-2:#a3b3c6;--garis:#24384f;--garis-isian:#6a8094;--utama:#cfe3f5;--aksen:#4fd1c1;--aksen-tipis:#123b3a;--merah:#f97066;--kuning:#f0a04b;--hijau:#7cc35a;color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--teks);font:16px/1.5 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
 .bungkus{max-width:640px;margin:0 auto;padding:max(12px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left))}
@@ -16,7 +16,7 @@ body{margin:0;background:var(--bg);color:var(--teks);font:16px/1.5 "Plus Jakarta
 .kartu h2{font-size:17px;margin:0 0 4px}
 .sub{color:var(--teks-2);font-size:14px;margin:0 0 12px}
 .lbl{display:block;font-size:14px;font-weight:600;margin:12px 0 6px}
-input,select,textarea{width:100%;min-height:48px;padding:10px 14px;border-radius:14px;border:1px solid var(--garis);background:var(--kartu-2);color:var(--teks);font:inherit;font-size:16px}
+input,select,textarea{width:100%;min-height:48px;padding:10px 14px;border-radius:14px;border:1px solid var(--garis-isian);background:var(--kartu-2);color:var(--teks);font:inherit;font-size:16px}
 textarea{min-height:96px;resize:vertical}
 input:focus,input:focus-within,select:focus,textarea:focus{outline:3px solid var(--aksen);outline-offset:1px}
 .baris{display:grid;grid-template-columns:1fr 1fr;gap:10px}.baris>*{min-width:0}
