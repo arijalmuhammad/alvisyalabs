@@ -1,5 +1,5 @@
 /* Halaman muka AlvisyaLabs: jaringan dulu, salinan simpanan bila luring. */
-const C = 'alvisya-muka-4';
+const C = 'alvisya-muka-5';
 self.addEventListener('install', (e) => { self.skipWaiting(); e.waitUntil(caches.open(C).then((c) => c.addAll(['./', 'index.html', 'ikon/alvisya-simbol.svg', 'ikon/ccare-plus.svg', 'ikon/alvisya-192.png', 'ccareplus/', 'ccareplus/mesin.js']))); });
 self.addEventListener('activate', (e) => e.waitUntil(caches.keys().then((k) => Promise.all(k.filter((x) => x !== C).map((x) => caches.delete(x)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', (e) => {
