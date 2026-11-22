@@ -249,6 +249,7 @@ details[open] .chev svg{transform:rotate(90deg)}
 <dialog id="dlg" aria-labelledby="dlgJudul"><form method="dialog" id="dlgForm"></form></dialog>
 <div class="toast" id="toast" role="status" hidden></div>
 
+<script src="mesin.js"></script>
 <script>
 const CFG = /*CFG*/{ mode: 'pwa', api: 'https://api.alvisya.my.id/' }/*CFG*/;   // data lewat cache Cloudflare (alvisyalabs-ccareplus)
 const TAB = [['dash', 'Ringkas'], ['jadwal', 'Jadwal'], ['harian', 'Catatan'], ['pasien', 'Pasien'], ['lain', 'Lainnya']];
@@ -305,13 +306,74 @@ function bacaAkun() {
 let AKUN = bacaAkun();
 function gasRun(fn, ...a) { return new Promise((ok, no) => google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn](...a)); }
 async function jawab(p) { const j = await p; if (!j || !j.ok) throw new Error((j && j.pesan) || 'Gagal'); return j; }
+/* ---------- database lokal: CCare Plus menyimpan & menghitung sendiri (mesin.js); Sheet hanya tempat sinkron ---------- */
+const DBL = {   // IndexedDB: 'S' = data mentah terakhir dari Sheet, 'antre' = perubahan yang belum terkirim
+  buka() { return this.p || (this.p = new Promise((ok, no) => { const r = indexedDB.open('ccareplus', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); })); },
+  async baca(k) { const db = await this.buka(); return new Promise((ok, no) => { const q = db.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => ok(q.result); q.onerror = () => no(q.error); }); },
+  async tulis(k, v) { const db = await this.buka(); return new Promise((ok, no) => { const t = db.transaction('kv', 'readwrite'); v == null ? t.objectStore('kv').delete(k) : t.objectStore('kv').put(v, k); t.oncomplete = ok; t.onerror = () => no(t.error); }); },
+};
+let S = null, ANTRE = [], LAMA = false;   // LAMA: Apps Script belum punya aksi=sinkron → jalur lama (hitung di Sheet)
+async function siapkan() {
+  if (S !== null) return;
+  try { S = (await DBL.baca('S')) || false; ANTRE = (await DBL.baca('antre')) || []; } catch (e) { S = false; ANTRE = []; }
+  if (S && S.u !== AKUN.u) { S = false; ANTRE = []; }   // data milik sambungan lain
+}
+const simpanS = () => Promise.all([DBL.tulis('S', S || null), DBL.tulis('antre', ANTRE.length ? ANTRE : null)]).catch(() => {});
+const kirimLangsung = body => jawab(fetch(CFG.api || AKUN.u, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ kunci: AKUN.k }, body)) }).then(r => r.json()));
+/** kirim antrean satu per satu; ditolak Sheet (mis. di luar 6 periode) = dibuang, data Sheet yang berlaku saat tarik berikutnya */
+async function kirimAntre() {
+  while (ANTRE.length) {
+    try { await kirimLangsung(ANTRE[0]); }
+    catch (e) { if (e instanceof TypeError) throw e; toast('Perubahan jadwal ditolak Sheet: ' + e.message); }   // TypeError = tidak tersambung → coba lagi nanti
+    ANTRE.shift(); await simpanS();
+  }
+}
+/** tarik data mentah bila versi Sheet berubah. Hasil: true bila ada yang berubah */
+function sinkron() {
+  return sinkron.p || (sinkron.p = (async () => {
+    try {
+      await kirimAntre();
+      const r = await jawab(fetch((CFG.api || AKUN.u) + '?' + new URLSearchParams({ aksi: 'sinkron', kunci: AKUN.k, ver: S ? S.ver : '' })).then(r => r.json()));
+      let berubah;
+      if (r.sama) { berubah = JSON.stringify([S.mintaScan, S.bagi]) !== JSON.stringify([r.mintaScan, r.bagi]); S.mintaScan = r.mintaScan; S.bagi = r.bagi; }
+      else { berubah = true; S = Object.assign(r, { u: AKUN.u }); }
+      S.diambil = Date.now(); await simpanS();
+      return berubah;
+    } catch (e) { if (/Aksi tidak dikenal/.test(e.message)) LAMA = true; throw e; }
+    finally { sinkron.p = null; }
+  })());
+}
+const tglJam = ms => new Date(ms).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+async function dasborLokal(awal, segar) {
+  await siapkan();
+  if (!LAMA && (!S || segar)) await sinkron().catch(e => { if (!S && !LAMA) throw e; });
+  if (LAMA || !S) return null;
+  if (!segar) sinkron().then(b => { offline = ''; if (b) muat(awalDipilih, true); else perbaruiStatus(); })
+    .catch(() => { if (!LAMA) { offline = tglJam(S.diambil); perbaruiStatus(); } });
+  return Object.assign(Mesin.hitung(S, awal), { _diambil: S.diambil });
+}
+/** jadwal.ubah disimpan di HP dulu (bisa tanpa sinyal), lalu dikirim ke Sheet */
+async function ubahJadwalLokal(body) {
+  if (body.kode && S.kodeJadwal.indexOf(body.kode) < 0) throw new Error('Kode jadwal tidak dikenal.');
+  const s = S.slot.find(x => x.t === body.t), k = s && s.kotak.find(x => x.ke === body.ke);
+  if (!k) throw new Error('Tanggal ini di luar Jadwal Shift (6 periode).');
+  k.kode = body.kode; k.ket = body.kode ? String(body.ket || '').slice(0, 80) : '';
+  ANTRE.push(body); await simpanS();
+  kirimAntre().catch(() => { offline = tglJam(S.diambil); perbaruiStatus(); });
+  return { ok: true, t: body.t, kotak: s.kotak.map(x => ({ ke: x.ke, kode: x.kode, ket: x.ket })) };
+}
 const api = {
-  dasbor: (awal, segar) => jawab(CFG.mode === 'gas' ? gasRun('dasborRun', AKUN.k, awal || '', !!segar)
+  dasbor: async (awal, segar) => (CFG.mode !== 'gas' && await dasborLokal(awal, segar)) || jawab(CFG.mode === 'gas' ? gasRun('dasborRun', AKUN.k, awal || '', !!segar)
     : fetch((CFG.api || AKUN.u) + '?' + new URLSearchParams({ aksi: 'dasbor', kunci: AKUN.k, awal: awal || '', segar: segar ? '1' : '', ringan: '1' })).then(r => r.json())),
-  pasien: awal => jawab(CFG.mode === 'gas' ? gasRun('pasienRun', AKUN.k, awal || '')
+  pasien: async awal => CFG.mode !== 'gas' && !LAMA && S ? Mesin.pasien(S, awal) : jawab(CFG.mode === 'gas' ? gasRun('pasienRun', AKUN.k, awal || '')
     : fetch((CFG.api || AKUN.u) + '?' + new URLSearchParams({ aksi: 'pasien', kunci: AKUN.k, awal: awal || '' })).then(r => r.json())),
-  kirim: body => jawab(CFG.mode === 'gas' ? gasRun('pemilikRun', AKUN.k, body)
-    : fetch(CFG.api || AKUN.u, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ kunci: AKUN.k }, body)) }).then(r => r.json())),
+  kirim: async body => {
+    if (CFG.mode === 'gas') return jawab(gasRun('pemilikRun', AKUN.k, body));
+    if (!LAMA && S && body.aksi === 'jadwal.ubah') return ubahJadwalLokal(body);
+    const r = await kirimLangsung(body);
+    if (S) { if ('mintaScan' in r || body.aksi === 'scan.batal') S.mintaScan = r.mintaScan || null; if (r.bagi) S.bagi = r.bagi; simpanS(); }
+    return r;
+  },
 };
 
 let tab = 'dash', D = null, awalDipilih = '', offline = '', diambil = 0, segar = false, fPasien = 'semua';
@@ -325,7 +387,7 @@ function gambarTab() {
   $('tabs').innerHTML = TAB.map(([id, l]) => `<button class="tab" data-t="${id}"${id === tab ? ' aria-current="page"' : ''}>${IK[id]}<span>${l}</span>${id === 'jadwal' && n ? `<span class="lencana" aria-label="${n} permintaan">${n}</span>` : ''}</button>`).join('');
   $('tabs').querySelectorAll('.tab').forEach(b => b.onclick = () => { tab = b.dataset.t; gambarTab(); gambar(); window.scrollTo(0, 0); });
 }
-async function muat(awal, diam, segar) {
+async function muat(awal, diam, paksa) {
   awalDipilih = awal || '';
   const lokal = bacaLokal('jasaipb.cache.' + (awalDipilih || 'kini'));
   if (!diam && cache[awalDipilih]) { D = cache[awalDipilih]; gambarTab(); gambar(); }
@@ -333,13 +395,13 @@ async function muat(awal, diam, segar) {
   else if (!diam) $('isi').classList.add('memuat');
   $('segaran').hidden = false; segar = true; perbaruiStatus();
   try {
-    const d = await api.dasbor(awalDipilih, segar);
+    const d = await api.dasbor(awalDipilih, paksa);
     $('segaran').hidden = true; segar = false; muat.lokal = null;
     if (D && D.periode && d.periode.awal === D.periode.awal && D.pasien) d.pasien = D.pasien;
     cache[awalDipilih] = d; if (!awalDipilih) cache[d.periode.awal] = d;
-    offline = ''; simpanLokal('jasaipb.cache.' + (awalDipilih || 'kini'), { waktu: Date.now(), d: Object.assign({}, d, { pasien: null }) });
-    D = d; diambil = Date.now(); $('isi').classList.remove('memuat'); gambarTab(); gambar();
-    if (!cache[d.periode.lalu]) api.dasbor(d.periode.lalu).then(x => { cache[d.periode.lalu] = x; }).catch(() => {});
+    offline = ''; if (!d._diambil) simpanLokal('jasaipb.cache.' + (awalDipilih || 'kini'), { waktu: Date.now(), d: Object.assign({}, d, { pasien: null }) });
+    D = d; diambil = d._diambil || Date.now(); $('isi').classList.remove('memuat'); gambarTab(); gambar();
+    if (!d._diambil && !cache[d.periode.lalu]) api.dasbor(d.periode.lalu).then(x => { cache[d.periode.lalu] = x; }).catch(() => {});
     jadwalkanCek();
   } catch (e) {
     $('isi').classList.remove('memuat'); $('segaran').hidden = true; segar = false; perbaruiStatus();
@@ -390,7 +452,7 @@ function kepalaHalaman(judul, sub, aksi, tanpaPeriode) {
   return `<div class="baris-judul"><div class="judul-per">${kiri}<div class="judul-teks"><h1>${judul}</h1><p class="sub">${sub}</p></div>${kanan}</div>${aksi ? `<div class="navper">${aksi}</div>` : ''}</div>`;
 }
 function statusData() {
-  if (offline) return `<div class="status awas" role="status">${IK.awas}<span>Tidak tersambung · data ${esc(offline)}</span><button class="tb-teks" data-aksi="muatUlang">Coba lagi</button></div>`;
+  if (offline) return `<div class="status awas" role="status">${IK.awas}<span>Tidak tersambung · data ${esc(offline)}${ANTRE.length ? ' · ' + ANTRE.length + ' perubahan menunggu dikirim' : ''}</span><button class="tb-teks" data-aksi="muatUlang">Coba lagi</button></div>`;
   if (segar) return `<div class="status" role="status">${IK.putar}<span>Memperbarui…</span></div>`;
   return `<div class="status ok" role="status">${IK.ok}<span>Terbaru${diambil ? ' · diperbarui ' + jam(diambil) : ''}</span><button class="tb-teks" data-aksi="scan">Minta scan</button></div>`;
 }
@@ -432,7 +494,7 @@ function pasangAksi() {
     if (a === 'fp') { fPasien = b.dataset.f; gambar(); const c = $('cariPasien'); if (c && cariPasien.q) { c.value = cariPasien.q; cariPasien(cariPasien.q); } }
     if (a === 'pasang' && pasangPrompt) { pasangPrompt.prompt(); pasangPrompt = null; gambar(); }
     if (a === 'batalScan') { b.disabled = true; try { await api.kirim({ aksi: 'scan.batal' }); D.mintaScan = null; Object.keys(cache).forEach(k => cache[k].mintaScan = null); gambar(); } catch (e) { toast(e.message); b.disabled = false; } }
-    if (a === 'keluar') { simpanLokal(SIMPAN, null); Object.keys(localStorage).filter(k => /^jasaipb\./.test(k)).forEach(k => simpanLokal(k, null)); AKUN = null; D = null; gambar(); }
+    if (a === 'keluar') { S = false; ANTRE = []; simpanS(); simpanLokal(SIMPAN, null); Object.keys(localStorage).filter(k => /^jasaipb\./.test(k)).forEach(k => simpanLokal(k, null)); AKUN = null; D = null; gambar(); }
     if (a === 'jawab') {
       const baris = b.closest('.minta'); baris.querySelectorAll('button').forEach(x => x.disabled = true);
       try { const r = await api.kirim({ aksi: 'permintaan.jawab', id: b.dataset.id, terima: b.dataset.terima === '1' }); toast(r.status === 'Diterima' ? 'Diterima — Jadwal Shift diperbarui.' : 'Permintaan ditolak.'); muat(awalDipilih, true); }
@@ -658,7 +720,7 @@ function vSetup() {
   $('pasangKode').onclick = async () => {
     const a = bacaKodePasang($('kodePasang').value);
     if (!a) { $('pesanPasang').textContent = 'Kode tidak dikenali. Tempel kode SJC1:… atau tautan dasbor lengkap.'; return; }
-    AKUN = a; $('pesanPasang').textContent = 'Menyambungkan…';
+    AKUN = a; S = null; $('pesanPasang').textContent = 'Menyambungkan…';
     try { const d = await api.dasbor(''); simpanLokal(SIMPAN, a); cache[''] = d; D = d; gambarTab(); gambar(); }
     catch (e) { AKUN = null; $('pesanPasang').textContent = 'Gagal: ' + e.message; }
   };
@@ -739,7 +801,8 @@ $('tbBagi').onclick = () => {
 
 gambarTab(); gambar();
 if (CFG.mode === 'gas' || AKUN) muat('');
-window.addEventListener('hashchange', () => { const a = CFG.mode === 'gas' ? null : bacaKodePasang(decodeURIComponent(location.hash.slice(1))); if (a) { AKUN = bacaAkun(); D = null; Object.keys(cache).forEach(k => delete cache[k]); gambar(); muat(''); } });
+window.addEventListener('hashchange', () => { const a = CFG.mode === 'gas' ? null : bacaKodePasang(decodeURIComponent(location.hash.slice(1))); if (a) { AKUN = bacaAkun(); S = null; D = null; Object.keys(cache).forEach(k => delete cache[k]); gambar(); muat(''); } });
+window.addEventListener('online', () => { if (D && AKUN && CFG.mode !== 'gas') muat(awalDipilih, true); });   // sinyal kembali → kirim antrean & tarik
 document.addEventListener('visibilitychange', () => { if (!document.hidden && D && (CFG.mode === 'gas' || AKUN)) muat(awalDipilih, true); });
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(() => {});
 </script>
