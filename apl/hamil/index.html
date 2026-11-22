@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F2742">
+<title>Kalender Hamil</title>
+<link rel="icon" href="../../ikon/alvisya-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="../gaya.css">
+</head>
+<body>
+<div class="bungkus">
+  <header class="kepala">
+    <a class="kembali" href="../../" aria-label="Kembali ke AlvisyaLabs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <h1>Kalender Hamil</h1>
+  </header>
+  <div class="tab" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-m="hpht">Dari HPHT</button>
+    <button type="button" role="tab" aria-selected="false" data-m="usg">Dari USG</button>
+  </div>
+  <section class="kartu">
+    <div id="fHpht">
+      <label class="lbl" for="hpht">Hari pertama haid terakhir (HPHT)</label><input id="hpht" type="date">
+      <label class="lbl" for="siklus">Panjang siklus haid (hari)</label><input id="siklus" type="number" inputmode="numeric" min="21" max="45" value="28">
+      <p class="catatan">Siklus ≠ 28 hari: HPL digeser sebanyak selisihnya. Siklus tidak teratur atau HPHT tidak yakin → pakai USG trimester I.</p>
+    </div>
+    <div id="fUsg" hidden>
+      <label class="lbl" for="tusg">Tanggal USG</label><input id="tusg" type="date">
+      <div class="baris"><div><label class="lbl" for="uw">Usia kehamilan saat USG — minggu</label><input id="uw" type="number" inputmode="numeric" min="4" max="42"></div>
+      <div><label class="lbl" for="ud">hari</label><input id="ud" type="number" inputmode="numeric" min="0" max="6" value="0"></div></div>
+    </div>
+    <label class="lbl" for="kini">Dihitung pada tanggal</label><input id="kini" type="date">
+  </section>
+  <div id="out"></div>
+  <section class="kartu" id="jadwal" hidden>
+    <h2>Jadwal ANC</h2>
+    <p class="sub">Minimal 6 kali: 2 kali trimester I, 1 kali trimester II, 3 kali trimester III; dokter minimal 2 kali (trimester I dan III). Buku KIA, Kemenkes 2020.</p>
+    <ul class="daftar" id="daftar"></ul>
+  </section>
+  <p class="catatan">Alat bantu hitung (aturan Naegele: HPHT + 280 hari). Tidak ada data yang disimpan atau dikirim.</p>
+</div>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+const HARI = 864e5;
+const tgl = (s) => s ? new Date(s + 'T00:00:00Z') : null;
+const iso = (d) => d.toISOString().slice(0, 10);
+const tampil = (d) => d.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const uk = (hari) => `${Math.floor(hari / 7)} minggu ${hari % 7} hari`;
+let mode = 'hpht';
+$('kini').value = iso(new Date(Date.now() + 7 * 3600e3));
+
+document.querySelectorAll('[data-m]').forEach((b) => b.onclick = () => {
+  mode = b.dataset.m; document.querySelectorAll('[data-m]').forEach((x) => x.setAttribute('aria-selected', x === b));
+  $('fHpht').hidden = mode !== 'hpht'; $('fUsg').hidden = mode !== 'usg'; hitung();
+});
+
+function hitung() {
+  let awal = null;   // "HPHT efektif" (titik 0 minggu)
+  if (mode === 'hpht') { const h = tgl($('hpht').value), s = +$('siklus').value || 28; if (h) awal = new Date(h.getTime() + (s - 28) * HARI); }
+  else { const u = tgl($('tusg').value), w = +$('uw').value, d = +$('ud').value || 0; if (u && w) awal = new Date(u.getTime() - (w * 7 + d) * HARI); }
+  const kini = tgl($('kini').value) || new Date();
+  if (!awal) { $('out').innerHTML = `<div class="hasil" role="status"><span class="angka">–</span><span class="tafsir">${mode === 'hpht' ? 'Isi HPHT' : 'Isi tanggal dan usia kehamilan saat USG'}</span></div>`; $('jadwal').hidden = true; return; }
+  const hpl = new Date(awal.getTime() + 280 * HARI), hari = Math.round((kini - awal) / HARI);
+  if (hari < 0) { $('out').innerHTML = `<div class="hasil" role="status"><span class="angka">–</span><span class="tafsir">Tanggal hitung sebelum awal kehamilan — periksa tanggal.</span></div>`; $('jadwal').hidden = true; return; }
+  const tri = hari < 14 * 7 ? 'Trimester I' : hari < 28 * 7 ? 'Trimester II' : 'Trimester III';
+  const sisa = Math.round((hpl - kini) / HARI);
+  $('out').innerHTML = `<section class="kartu" role="status" aria-live="polite">
+    <p class="sub" style="margin:0">Taksiran persalinan (HPL)</p><p style="font-size:26px;font-weight:800;margin:2px 0 10px">${tampil(hpl)}</p>
+    <div class="baris"><div><p class="sub" style="margin:0">Usia kehamilan</p><p style="font-size:19px;font-weight:800;margin:0">${uk(hari)}</p><span class="tag">${tri}</span></div>
+    <div><p class="sub" style="margin:0">${sisa >= 0 ? 'Menuju HPL' : 'Lewat HPL'}</p><p style="font-size:19px;font-weight:800;margin:0">${Math.abs(sisa)} hari</p>${hari >= 42 * 7 ? '<span class="tag" style="background:#fde2e0;color:var(--merah)">≥ 42 minggu: lewat bulan</span>' : hari >= 37 * 7 ? '<span class="tag">Aterm</span>' : ''}</div></div></section>`;
+  const titik = [
+    [0, 12 * 7 + 6, 'ANC 1 — trimester I (dokter)', 'Usia ≤ 12 minggu 6 hari'],
+    [0, 12 * 7 + 6, 'ANC 2 — trimester I', 'Usia ≤ 12 minggu 6 hari'],
+    [13 * 7, 27 * 7 + 6, 'ANC 3 — trimester II', '13 – 27 minggu 6 hari'],
+    [28 * 7, 40 * 7, 'ANC 4 — trimester III', 'mulai 28 minggu'],
+    [28 * 7, 40 * 7, 'ANC 5 — trimester III (dokter)', 'idealnya sekitar 36 minggu'],
+    [28 * 7, 40 * 7, 'ANC 6 — trimester III', 'menjelang persalinan'],
+  ];
+  $('daftar').innerHTML = titik.map(([a, b, n, ket]) => {
+    const da = new Date(awal.getTime() + a * HARI), db = new Date(awal.getTime() + b * HARI), lewat = hari > b, kini_ = hari >= a && hari <= b;
+    return `<li><b>${n}</b>${kini_ ? ' <span class="tag">sekarang</span>' : lewat ? ' <span class="tag" style="background:var(--kartu-2);color:var(--teks-2)">lewat</span>' : ''}<br><span class="sub">${ket} · ${tampil(da)} – ${tampil(db)}</span></li>`;
+  }).join('');
+  $('jadwal').hidden = false;
+}
+document.querySelectorAll('input').forEach((i) => i.addEventListener('input', hitung));
+hitung();
+</script>
+</body>
+</html>
