@@ -1,7 +1,7 @@
 {
- "versionCode": 6,
- "versionName": "1.5",
+ "versionCode": 7,
+ "versionName": "1.6",
  "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
- "sha256": "6b1fa93df26449e5ae03c808d93de2dab53e941b3089b811fb7508ab8c440f93",
- "catatan": "Tombol pembaruan di dalam aplikasi; kunci PIN/sidik jari CCare Plus."
+ "sha256": "02ac0ce2e2565386afe5491aa4abf7ac523ba9f4c180d6a87e0b688da7c1ebd5",
+ "catatan": "Uji PCare di dalam aplikasi (CCare Plus → Lainnya → Uji PCare di aplikasi)."
 }
