@@ -73,7 +73,17 @@ h1{margin:0;font-size:28px;font-weight:800;letter-spacing:-.3px}
 .pesan{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%) translateY(16px);opacity:0;max-width:calc(100vw - 32px);padding:12px 16px;border-radius:12px;background:var(--teks);color:var(--kanvas);font-size:15px;font-weight:600;box-shadow:0 8px 24px rgba(15,39,66,.24);transition:opacity .2s,transform .2s;pointer-events:none}
 .pesan.tampil{opacity:1;transform:translateX(-50%) translateY(0)}
 .tak-ada{margin:0;font-size:15px;color:var(--teks-2)}
-@media (max-width:600px){h1{font-size:24px}.meja{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}.kartu{padding:14px;gap:0}.kartu .atas{flex-wrap:wrap;gap:10px}.kartu .ik{width:48px;height:48px}.kartu .isi{order:3;flex-basis:100%}.kartu h2{font-size:17px}.kartu p,.kartu .buka{display:none}.kartu .bintang{margin:-8px -8px 0 auto}.regang::after{content:'';position:absolute;inset:0;border-radius:16px}.cari{max-width:none;flex-basis:100%}.ubin{grid-template-columns:1fr}main .lebar{gap:32px}}
+.ganti{align-self:center;min-height:44px;border:0;background:none;color:var(--teks-2);font-weight:600;font-size:14px;font-family:inherit;text-decoration:underline;cursor:pointer}
+dialog{width:min(440px,calc(100vw - 32px));border:1px solid var(--garis);border-radius:16px;padding:24px;background:var(--kartu);color:var(--teks);box-shadow:0 16px 48px rgba(15,39,66,.24)}
+dialog::backdrop{background:rgba(15,39,66,.4)}
+dialog h2{margin:0 0 8px;font-size:20px}dialog p{margin:0 0 16px;font-size:15px;color:var(--teks-2);line-height:1.4}
+dialog label{display:block;font-size:13px;font-weight:600;color:var(--teks-2);margin-bottom:4px}
+dialog input{width:100%;height:44px;padding:0 12px;border:1px solid var(--garis);border-radius:8px;background:var(--isian);color:var(--teks);font-size:15px;font-family:inherit}
+dialog .galat{color:#B91C1C;margin:8px 0 0}
+dialog .aksi{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+dialog .aksi button{min-height:44px;padding:0 18px;border-radius:8px;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer}
+dialog .utama{border:0;background:var(--utama);color:var(--tombol-teks)}dialog .kedua{border:1px solid var(--garis);background:transparent;color:var(--teks)}
+@media (max-width:600px){h1{font-size:24px}.meja{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px}.kartu{padding:14px;gap:0}.kartu .atas{flex-wrap:wrap;gap:10px}.kartu .ik{width:48px;height:48px}.kartu .isi{order:3;flex-basis:100%}.kartu h2{font-size:17px}.kartu p,.kartu .buka,.kartu .ganti{display:none}.kartu .bintang{margin:-8px -8px 0 auto}.regang::after{content:'';position:absolute;inset:0;border-radius:16px}.cari{max-width:none;flex-basis:100%}.ubin{grid-template-columns:1fr}main .lebar{gap:32px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -108,19 +118,32 @@ h1{margin:0;font-size:28px;font-weight:800;letter-spacing:-.3px}
   </div>
 </main>
 <div class="pesan" id="pesan" role="status" aria-live="polite"></div>
+<dialog id="atur" aria-labelledby="atur-judul">
+  <form id="atur-form" method="dialog">
+    <h2 id="atur-judul">Tautan CCare Plus</h2>
+    <p>Tempel tautan dasbor lengkap (berakhiran <code style="white-space:nowrap">?dasbor=…</code>). Disimpan hanya di perangkat ini.</p>
+    <label for="atur-isi">Tautan dasbor</label>
+    <input id="atur-isi" type="url" inputmode="url" autocomplete="off" placeholder="https://script.google.com/macros/s/…/exec?dasbor=…" required>
+    <p class="galat" id="atur-galat" role="alert" hidden>Tautan tidak dikenali. Salin ulang tautan dasbor dari Apps Script.</p>
+    <div class="aksi"><button type="submit" value="batal" formnovalidate class="kedua">Batal</button><button type="submit" value="simpan" class="utama">Simpan</button></div>
+  </form>
+</dialog>
 <script>
 'use strict';
 /* Daftar aplikasi: tambah baris baru di sini. id: huruf kecil/angka/tanda hubung. */
 const APL = [
-  { id: 'ccare', g: 'Klinik IPB', nama: 'CCare Plus', ket: 'C-CARE + ekstensi dokter', url: 'https://c-care.ipb.ac.id/', logo: 'ikon/ccare-plus.svg' },
-  { id: 'jasa', g: 'Klinik IPB', nama: 'Jasa IPB', ket: 'Dasbor jasa dan shift', url: 'https://arijalmuhammad.github.io/jasa-ipb/', d: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6' },
+  { id: 'ccare', g: 'Klinik IPB', nama: 'CCare Plus', ket: 'Dasbor jasa, jadwal, dan catatan dokter', pribadi: true, logo: 'ikon/ccare-plus.svg' },
+  { id: 'ccareipb', g: 'Klinik IPB', nama: 'C-CARE IPB', ket: 'Rekam medis klinik', url: 'https://c-care.ipb.ac.id/', d: 'M9 4h6v3H9zM7 5H5v15h14V5h-2M8 11h8M8 15h5' },
   { id: 'antrean', g: 'Klinik IPB', nama: 'Antrean', ket: 'Nomor antrean harian', url: 'https://docs.google.com/spreadsheets/d/1_U6yGAANGuQXeqc5bOs_LZ2B3rTjcLjx1IBc1Cs_Nzw/edit', d: 'M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4zM10 7v10' },
   { id: 'pcare', g: 'Klinik IPB', nama: 'PCare BPJS', ket: 'Situs resmi BPJS Kesehatan', url: 'https://pcarejkn.bpjs-kesehatan.go.id/eclaim/', d: 'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6' },
   { id: 'awanmedis', g: 'Alvisya Labs', nama: 'AwanMedis', ket: 'RME klinik dan praktik', url: 'https://awanmedis.my.id/', d: 'M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z' },
   { id: 'awandosis', g: 'Alvisya Labs', nama: 'AwanDosis', ket: 'Kalkulator dosis anak dan dewasa', url: 'https://pediatri.awanmedis.my.id/', d: 'M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7zM7 10l7 7' }
 ];
 const GRUP = ['Klinik IPB', 'Alvisya Labs'];
-const MAKS = 4, BAWAAN = ['ccare', 'jasa'];
+const MAKS = 4, BAWAAN = ['ccare', 'ccareipb'];
+/* Tautan dasbor berisi kunci akses (data jasa & pasien): disimpan HANYA di perangkat ini, tidak di halaman publik dan tidak ke relay. */
+const POLA_DASBOR = /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec\?dasbor=[\w-]{8,}$/;
+const tautanPribadi = (id) => { const u = simpan.baca('alvisyaTautan.' + id); return typeof u === 'string' && POLA_DASBOR.test(u) ? u : ''; };
 /* Sinkron favorit lintas perangkat (Apps Script milik dr. Arijal).
  * shortcut: token tertanam di halaman publik; siapa pun yang membacanya bisa mengubah daftar bintang (bukan data pasien). Ganti ke login bila perlu. */
 const SINKRON = { url: 'https://script.google.com/macros/s/AKfycbzfszQuJjcDD71vzMB9xGWTu40OIRn88PUDNywQpz5IOUcdR21M5lqhHz4W1FugC8Xx/exec', t: 'Y_FNdV9ztxHTbmdXO0e-teCiktKY9F8J' };
@@ -142,7 +165,10 @@ function tombolBintang(a) {
   const label = on ? `Lepas ${a.nama} dari Meja Utama` : `Taruh ${a.nama} di Meja Utama`;
   return `<button type="button" class="bintang" data-id="${esc(a.id)}" aria-pressed="${on}" aria-label="${esc(label)}" title="${esc(label)}">${BINTANG}</button>`;
 }
-const tautan = (a) => `href="${esc(a.url)}" target="_blank" rel="noopener"`;
+const tautan = (a) => {
+  const u = a.pribadi ? tautanPribadi(a.id) : a.url;
+  return u ? `href="${esc(u)}" target="_blank" rel="noopener"` : `href="#" data-atur="${esc(a.id)}"`;
+};
 
 function gambar() {
   const q = $('#cari').value.trim().toLowerCase();
@@ -152,7 +178,8 @@ function gambar() {
   $('#meja').innerHTML = meja.length ? meja.map((a) => `
     <article class="kartu">
       <div class="atas">${ikon(a)}<div class="isi"><h2><a class="regang" ${tautan(a)}>${esc(a.nama)}</a></h2><p>${esc(a.ket)}</p></div>${tombolBintang(a)}</div>
-      <a class="buka" ${tautan(a)}>Buka ${esc(a.nama)}</a>
+      <a class="buka" ${tautan(a)}>${a.pribadi && !tautanPribadi(a.id) ? 'Atur tautan ' : 'Buka '}${esc(a.nama)}</a>
+      ${a.pribadi && tautanPribadi(a.id) ? `<button type="button" class="ganti" data-atur="${esc(a.id)}">Ganti tautan</button>` : ''}
     </article>`).join('')
     : `<p class="kosong" style="grid-column:1/-1">${q ? 'Tidak ada aplikasi Meja Utama yang cocok.' : 'Belum ada aplikasi di Meja Utama. Ketuk bintang pada aplikasi di bawah.'}</p>`;
   const html = GRUP.map((g) => {
@@ -199,6 +226,8 @@ async function tarik() {
 }
 
 document.addEventListener('click', (e) => {
+  const at = e.target.closest('[data-atur]');
+  if (at) { e.preventDefault(); return bukaAtur(at.dataset.atur); }
   const b = e.target.closest('.bintang'); if (!b) return;
   const id = b.dataset.id, a = APL.find((x) => x.id === id);
   if (st.ids.includes(id)) { st.ids = st.ids.filter((x) => x !== id); pesan(`${a.nama} dilepas dari Meja Utama`); }
@@ -209,12 +238,24 @@ document.addEventListener('click', (e) => {
   kirim();
 });
 $('#cari').addEventListener('input', gambar);
+function bukaAtur(id) {
+  const d = $('#atur'); d.dataset.id = id; $('#atur-isi').value = tautanPribadi(id); $('#atur-galat').hidden = true; d.showModal(); $('#atur-isi').focus();
+}
+$('#atur-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const d = $('#atur'), v = $('#atur-isi').value.trim();
+  if (e.submitter && e.submitter.value === 'batal') return d.close();
+  if (!POLA_DASBOR.test(v)) { $('#atur-galat').hidden = false; return; }
+  simpan.tulis('alvisyaTautan.' + d.dataset.id, v); d.close(); gambar(); pesan('Tautan CCare Plus tersimpan di perangkat ini');
+});
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') tarik(); });
 window.addEventListener('online', tarik);
 
 const jam = new Date().getHours();
 $('#sapa').textContent = 'Selamat ' + (jam < 11 ? 'pagi' : jam < 15 ? 'siang' : jam < 18 ? 'sore' : 'malam') + ', dr. Arijal';
 gambar(); tarik();
+const minta = new URLSearchParams(location.search).get('buka');   // dari halaman /ccareplus/
+if (minta) { history.replaceState(null, '', location.pathname); const a = APL.find((x) => x.id === minta); if (a) { const u = a.pribadi ? tautanPribadi(a.id) : a.url; if (u) location.href = u; else bukaAtur(a.id); } }
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 </script>
 </body>
