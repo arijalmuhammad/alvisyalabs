@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.13",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.13.zip",
-  "sha256": "e7c51adc8aedf1641147e059d439d2fec7ac2c0a558517c12c740156a84a106c",
-  "catatan": "Resep alkes stok habis/minus atau melebihi stok ditahan sebelum Simpan; (+) resep otomatis mati (CCare Dokter 4.10.15)."
+  "versi": "0.2.14",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.14.zip",
+  "sha256": "9ea4dc83ac3141856ff07a3942bfcf0ddd1072db5880508f89a5b47cdd5f7540",
+  "catatan": "Resep alkes stok minus boleh diresepkan lagi (sesuai LMITD); (+) resep otomatis tetap mati (CCare Dokter 4.10.16)."
 }
