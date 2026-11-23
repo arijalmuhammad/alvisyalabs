@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.1",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.1.zip",
-  "sha256": "184f17c40d812945f723faba953e8e110834ee69685f927afa4b27bcdfba2740",
-  "catatan": "Lebih ringan (tab C-CARE berbagi proses), kotak tanda tangan mini (CCare Dokter 4.10.5)."
+  "versi": "0.2.2",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.2.zip",
+  "sha256": "a9243cb81ee18af26a90125648335ec80be1d1fdb8a2d73fd638acf55e06b7e1",
+  "catatan": "Fitur CCare Dokter yang butuh jQuery C-CARE kini jalan; tombol (+) resep tidak menumpuk baris kosong (CCare Dokter 4.10.6)."
 }
