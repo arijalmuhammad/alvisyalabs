@@ -1,7 +1,7 @@
 {
-  "versionCode": 18,
-  "versionName": "1.17",
+  "versionCode": 19,
+  "versionName": "1.18",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "4c484833d1f0c01c6505112c36f196418a17e9b0b9bd4cbade43290f1257ebf1",
-  "catatan": "TTD Rencana Asuhan: nama pasien tampil di atas kotak tanda tangan agar tidak salah pasien."
+  "sha256": "8e0118204832f49f82e7e0cf1af198c448fa3cc9f4b066727ca93c21b30b4cda",
+  "catatan": "TTD: tablet berhenti meminta tanda tangan begitu dokter menutup CPPT; nama pasien juga dibaca dari isian nama penanda tangan."
 }
