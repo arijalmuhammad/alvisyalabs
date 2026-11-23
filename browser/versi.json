@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.8",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.8.zip",
-  "sha256": "183842761ddcd146db8b8450df9e3fe65d153f28e8c23fbfee49a1ffb485f8bb",
-  "catatan": "Nomor resep tidak lagi ganda (CCare Dokter 4.10.10)."
+  "versi": "0.2.9",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.9.zip",
+  "sha256": "ca6279be4bc7c0a6747e9cfe79054c39144322c2ba895a9d2d2691c5b0db551d",
+  "catatan": "Tombol (x) untuk menghapus resep nomor berapa pun (CCare Dokter 4.10.11)."
 }
