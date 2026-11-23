@@ -1,7 +1,7 @@
 {
-  "versionCode": 17,
-  "versionName": "1.16",
+  "versionCode": 18,
+  "versionName": "1.17",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "e109208e11b683b07b7fc0c62755e678237e58c7245ea45d5d3719deefbadaca",
-  "catatan": "Ukuran teks bisa diatur (Pengaturan → Ukuran teks) dan halaman bisa dicubit untuk zoom. Teks tidak lagi ikut membesar karena font sistem."
+  "sha256": "4c484833d1f0c01c6505112c36f196418a17e9b0b9bd4cbade43290f1257ebf1",
+  "catatan": "TTD Rencana Asuhan: nama pasien tampil di atas kotak tanda tangan agar tidak salah pasien."
 }
