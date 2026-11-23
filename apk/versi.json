@@ -1,7 +1,7 @@
 {
-  "versionCode": 19,
-  "versionName": "1.18",
+  "versionCode": 20,
+  "versionName": "1.19",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "8e0118204832f49f82e7e0cf1af198c448fa3cc9f4b066727ca93c21b30b4cda",
-  "catatan": "TTD: tablet berhenti meminta tanda tangan begitu dokter menutup CPPT; nama pasien juga dibaca dari isian nama penanda tangan."
+  "sha256": "8d87e941a1cf79a3bc63b07e2b2a009711d4db8d6c3e1b1caf813b6af536aa06",
+  "catatan": "Tablet TTD tampilan baru: Mohon menunggu, langkah Tanda tangan → Selesai, sesudah simpan: Terima kasih lalu tanda tangan pasien tadi, kembali menunggu sendiri."
 }
