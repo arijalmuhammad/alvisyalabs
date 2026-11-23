@@ -1,7 +1,7 @@
 {
-  "versionCode": 16,
-  "versionName": "1.15",
+  "versionCode": 17,
+  "versionName": "1.16",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "b2261f3753037834ced2f84c038a2a74af2d4d5c2acd6e0fe4943f00c5282120",
-  "catatan": "TTD: tombol buka kunci (tahan 3 detik), layar hitam setelah 10 detik, sematan layar hanya sekali."
+  "sha256": "e109208e11b683b07b7fc0c62755e678237e58c7245ea45d5d3719deefbadaca",
+  "catatan": "Ukuran teks bisa diatur (Pengaturan → Ukuran teks) dan halaman bisa dicubit untuk zoom. Teks tidak lagi ikut membesar karena font sistem."
 }
