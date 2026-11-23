@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.2",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.2.zip",
-  "sha256": "a9243cb81ee18af26a90125648335ec80be1d1fdb8a2d73fd638acf55e06b7e1",
-  "catatan": "Fitur CCare Dokter yang butuh jQuery C-CARE kini jalan; tombol (+) resep tidak menumpuk baris kosong (CCare Dokter 4.10.6)."
+  "versi": "0.2.3",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.3.zip",
+  "sha256": "86c86128fdf27f6abd8c74984c705f7afaf0048f88b25904567c86c579819310",
+  "catatan": "QR untuk menyambungkan CCare Plus di HP (CCare Dokter 4.10.7)."
 }
