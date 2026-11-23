@@ -882,11 +882,33 @@ function vSetup() {
     <h1 style="font-size:22px">Sambungkan ke Sheet Anda</h1>
     <p class="sub" style="margin:8px 0 16px">Di Sheet: menu <b>Klinik → Pasang aplikasi HP</b>, lalu buka tautannya di HP ini. Atau salin <b>Kode pasang</b> (menu Klinik → Alamat &amp; kunci) dan tempel di bawah.</p>
     <p class="sub" style="margin:0 0 16px">Sudah tersambung di laptop? Buka CCare Plus di sana → <b>Lainnya → Sambungkan HP atau tablet (QR)</b>, lalu pindai dengan kamera.</p>
-    ${window.AlvisyaLabs ? '<button class="tb utama" id="pindaiQr" style="width:100%;margin:0 0 20px">Pindai kode QR</button>' : ''}
+    ${window.AlvisyaLabs || 'BarcodeDetector' in window ? '<button class="tb utama" id="pindaiQr" style="width:100%;margin:0 0 20px">Pindai kode QR</button>' : ''}
+    <video id="kameraQr" playsinline muted hidden aria-label="Kamera pemindai QR" style="width:100%;max-width:360px;border-radius:12px;margin:0 0 12px;background:#000"></video>
     <label class="lbl" for="kodePasang">Kode pasang atau tautan dasbor</label>
     <div class="salin"><input class="isian" id="kodePasang" placeholder="SJC1:… atau https://script.google.com/…?dasbor=…" autocomplete="off"><button class="tb utama" id="pasangKode">Sambungkan</button></div>
     <p class="ket" id="pesanPasang" style="margin-top:8px"></p></div>`;
-  if ($('pindaiQr')) $('pindaiQr').onclick = () => AlvisyaLabs.pindai();   // APK AlvisyaLabs: kamera → tersambung otomatis
+  if ($('pindaiQr')) $('pindaiQr').onclick = () => window.AlvisyaLabs ? AlvisyaLabs.pindai() : pindaiBrowser();   // APK: kamera bawaan → tersambung otomatis
+  /* tanpa APK (Chrome di HP/tablet): BarcodeDetector + kamera; hasil diperlakukan sama seperti kode yang ditempel */
+  async function pindaiBrowser() {
+    const v = $('kameraQr'); let aliran;
+    try { aliran = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); }
+    catch (e) { $('pesanPasang').textContent = 'Kamera tidak bisa dibuka: ' + (e.message || e) + '. Tempel kode pasang di bawah.'; return; }
+    const det = new BarcodeDetector({ formats: ['qr_code'] }), selesai = () => { aliran.getTracks().forEach(t => t.stop()); v.hidden = true; $('pindaiQr').hidden = false; };
+    v.srcObject = aliran; v.hidden = false; $('pindaiQr').hidden = true; await v.play();
+    $('pesanPasang').textContent = 'Arahkan ke kode QR di Pengaturan CCare Dokter atau CCare Plus di laptop.';
+    const t0 = Date.now();
+    (async function cari() {
+      if (v.hidden) return;
+      if (Date.now() - t0 > 60000) { selesai(); $('pesanPasang').textContent = 'Tidak ada kode QR terbaca. Coba lagi.'; return; }
+      try {
+        const [kode] = await det.detect(v);
+        const teks = kode && kode.rawValue, a = teks && bacaKodePasang(teks.includes('#') ? decodeURIComponent(teks.split('#')[1]) : teks);
+        if (a) { selesai(); $('kodePasang').value = teks.includes('#') ? decodeURIComponent(teks.split('#')[1]) : teks; $('pasangKode').click(); return; }
+        if (teks) $('pesanPasang').textContent = 'Kode QR ini bukan kode CCare Plus.';
+      } catch (e) { /* bingkai belum siap */ }
+      setTimeout(cari, 250);
+    })();
+  }
   $('pasangKode').onclick = async () => {
     const a = bacaKodePasang($('kodePasang').value);
     if (!a) { $('pesanPasang').textContent = 'Kode tidak dikenali. Tempel kode SJC1:… atau tautan dasbor lengkap.'; return; }
