@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.10",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.10.zip",
-  "sha256": "800b068f8a6ecf8b2f33653dfec72249f357af419a0eb911f740fbacff96436d",
-  "catatan": "Obat yang sama tidak bisa dipilih dua kali di resep (CCare Dokter 4.10.12)."
+  "versi": "0.2.11",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.11.zip",
+  "sha256": "84bcb76a0d1dfc7a237290685f301c5d48f7525dfa015f0e0aee10fe1f05b414",
+  "catatan": "Baris obat kosong tidak lagi ikut terkirim saat Simpan CPPT, termasuk saat (+) Alkes/ICD sedang dimuat (CCare Dokter 4.10.13)."
 }
