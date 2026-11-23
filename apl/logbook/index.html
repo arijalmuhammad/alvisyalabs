@@ -86,6 +86,7 @@ const tutupForm = () => { $('form').hidden = true; ubah = null; };
 function gambar() {
   const q = $('cari').value.trim().toLowerCase();
   const bidang = ['Semua', ...new Set(semua.map((x) => x.bidang))];
+  if (!bidang.includes(saring)) saring = 'Semua';   // bidang terakhirnya dihapus/diubah
   $('saring').innerHTML = bidang.map((b) => `<button type="button" role="tab" aria-selected="${b === saring}" data-b="${esc(b)}">${esc(b)} ${b === 'Semua' ? semua.length : semua.filter((x) => x.bidang === b).length}</button>`).join('');
   $('saring').querySelectorAll('button').forEach((b) => b.onclick = () => { saring = b.dataset.b; gambar(); });
   const L = semua.filter((x) => (saring === 'Semua' || x.bidang === saring) && (!q || KOLOM.map((k) => x[k]).join(' ').toLowerCase().includes(q)))
@@ -107,11 +108,11 @@ $('form').onsubmit = async (e) => {
 };
 $('hapus').onclick = () => { $('yakinHapus').hidden = false; };
 $('tidakHapus').onclick = () => { $('yakinHapus').hidden = true; };
-$('yaHapus').onclick = async () => { await DB.buang(ubah.id); semua = await DB.semua(); tutupForm(); gambar(); pesan('Catatan dihapus.'); };
+$('yaHapus').onclick = async () => { try { await DB.buang(ubah.id); semua = await DB.semua(); tutupForm(); gambar(); pesan('Catatan dihapus.'); } catch (err) { pesan('Gagal menghapus: ' + err.message); } };
 $('cari').oninput = gambar;
 $('salin').onclick = async () => {
   if (!semua.length) return pesan('Belum ada catatan.');
-  const sel = (v) => /[",\n;]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+  const sel = (v) => { if (/^[=+\-@\t\r]/.test(v)) v = "'" + v; return /[",\n\r;]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };   // ' = cegah dibaca rumus di Sheets/Excel
   const csv = [KOLOM.join(','), ...semua.sort((a, b) => a.tanggal.localeCompare(b.tanggal)).map((x) => KOLOM.map((k) => sel(x[k] || '')).join(','))].join('\n');
   try { await navigator.clipboard.writeText(csv); pesan(`${semua.length} catatan disalin.`); }
   catch (e) { const t = document.createElement('textarea'); t.value = csv; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); pesan('Disalin.'); } catch (_) { pesan('Tidak bisa menyalin di perangkat ini.'); } t.remove(); }
