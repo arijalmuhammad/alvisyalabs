@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.4",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.4.zip",
-  "sha256": "a63221602fea1d2086bf3460b0a3849bc5b375612e8552e7ce7caefba6835a03",
-  "catatan": "Ctrl+F / F3: cari di halaman."
+  "versi": "0.2.5",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.5.zip",
+  "sha256": "889598e886acc9bcb0e40252ba0a9e7074f5fb45a9151fc366b2971f3c8b1fee",
+  "catatan": "Tablet TTD berhenti meminta tanda tangan begitu CPPT ditutup (CCare Dokter 4.10.8)."
 }
