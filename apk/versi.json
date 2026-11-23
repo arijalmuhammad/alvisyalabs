@@ -1,7 +1,7 @@
 {
-  "versionCode": 21,
-  "versionName": "1.20",
+  "versionCode": 22,
+  "versionName": "1.21",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "190b0acd1ba139aa35f84f1edc350009b1a9de1c7301288e95b7789e52fe01b5",
-  "catatan": "Tablet TTD: tulisan besar \"Silakan TANDA TANGAN di kotak bawah ini\" dan \"Tanda tangan di sini\" di kotak sampai pasien mulai menulis."
+  "sha256": "67a75412be1432d226bb156db93db57fba193868b913db5b4278b889301fa357",
+  "catatan": "Tablet TTD: pilihan simpan otomatis 1 detik (selain 3, 5, 10 detik)."
 }
