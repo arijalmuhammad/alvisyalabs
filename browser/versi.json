@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.12",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.12.zip",
-  "sha256": "8f93449549850902f123fc789f388c64ba19ef284a361ec7e799147d9cf01e47",
-  "catatan": "(+) resep obat otomatis dimatikan; baris resep ditambah manual dengan (+) (CCare Dokter 4.10.14)."
+  "versi": "0.2.13",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.13.zip",
+  "sha256": "e7c51adc8aedf1641147e059d439d2fec7ac2c0a558517c12c740156a84a106c",
+  "catatan": "Resep alkes stok habis/minus atau melebihi stok ditahan sebelum Simpan; (+) resep otomatis mati (CCare Dokter 4.10.15)."
 }
