@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.9",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.9.zip",
-  "sha256": "ca6279be4bc7c0a6747e9cfe79054c39144322c2ba895a9d2d2691c5b0db551d",
-  "catatan": "Tombol (x) untuk menghapus resep nomor berapa pun (CCare Dokter 4.10.11)."
+  "versi": "0.2.10",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.10.zip",
+  "sha256": "800b068f8a6ecf8b2f33653dfec72249f357af419a0eb911f740fbacff96436d",
+  "catatan": "Obat yang sama tidak bisa dipilih dua kali di resep (CCare Dokter 4.10.12)."
 }
