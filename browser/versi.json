@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.6",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.6.zip",
-  "sha256": "aebc548f8d0bfd0763d4d8a0691bffbe25bdb5a50efdc369e94ffc54e5d4cda6",
-  "catatan": "Pengaturan awal CCare Dokter (relay tablet, alarm pantau) kini berjalan di aplikasi; resep selalu 5 baris (CCare Dokter 4.10.9)."
+  "versi": "0.2.7",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.7.zip",
+  "sha256": "f1004ff8e886664d8c24507fb8c32da0b5dac62909cbba239dd69634154a6c92",
+  "catatan": "Bilah alamat bisa diketik (klik atau Ctrl+L)."
 }
