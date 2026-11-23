@@ -59,12 +59,15 @@ document.querySelectorAll('[data-m]').forEach((b) => b.onclick = () => {
 });
 
 function hitung() {
+  const salah = [...document.querySelectorAll('input[type=number]')].find((x) => !x.closest('[hidden]') && (x.validity.rangeUnderflow || x.validity.rangeOverflow || x.validity.badInput));
+  if (salah) { $('out').innerHTML = `<div class="hasil" role="status"><span class="angka">–</span><span class="tafsir">${document.querySelector(`label[for="${salah.id}"]`).textContent}: isi ${salah.min}–${salah.max}</span></div>`; $('jadwal').hidden = true; return; }
   let awal = null;   // "HPHT efektif" (titik 0 minggu)
   if (mode === 'hpht') { const h = tgl($('hpht').value), s = +$('siklus').value || 28; if (h) awal = new Date(h.getTime() + (s - 28) * HARI); }
   else { const u = tgl($('tusg').value), w = +$('uw').value, d = +$('ud').value || 0; if (u && w) awal = new Date(u.getTime() - (w * 7 + d) * HARI); }
   const kini = tgl($('kini').value) || new Date();
   if (!awal) { $('out').innerHTML = `<div class="hasil" role="status"><span class="angka">–</span><span class="tafsir">${mode === 'hpht' ? 'Isi HPHT' : 'Isi tanggal dan usia kehamilan saat USG'}</span></div>`; $('jadwal').hidden = true; return; }
   const hpl = new Date(awal.getTime() + 280 * HARI), hari = Math.round((kini - awal) / HARI);
+  if (hari > 45 * 7) { $('out').innerHTML = `<div class="hasil" role="status"><span class="angka">–</span><span class="tafsir">Usia kehamilan lebih dari 45 minggu — periksa tanggal.</span></div>`; $('jadwal').hidden = true; return; }
   if (hari < 0) { $('out').innerHTML = `<div class="hasil" role="status"><span class="angka">–</span><span class="tafsir">Tanggal hitung sebelum awal kehamilan — periksa tanggal.</span></div>`; $('jadwal').hidden = true; return; }
   const tri = hari < 14 * 7 ? 'Trimester I' : hari < 28 * 7 ? 'Trimester II' : 'Trimester III';
   const sisa = Math.round((hpl - kini) / HARI);
