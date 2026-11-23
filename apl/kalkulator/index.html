@@ -57,6 +57,9 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const angka = (n, d = 1) => n.toLocaleString('id-ID', { maximumFractionDigits: d });
 const WARNA = ['var(--hijau)', 'var(--kuning)', 'var(--merah)'];
+// Nilai di luar min/max isian (atau bukan angka) → pesan, bukan hasil ngawur.
+const luar = () => { const i = [...$('isi').querySelectorAll('input[type=number]')].find((x) => x.validity.rangeUnderflow || x.validity.rangeOverflow || x.validity.badInput);
+  return i && `${document.querySelector(`label[for="${i.id}"]`).textContent}: isi ${i.min}–${i.max}`; };
 const hasil = (nilai, teks, tingkat) => `<div class="hasil" role="status" aria-live="polite"><span class="angka">${nilai}</span><span class="tafsir">${tingkat != null ? `<b style="color:${tingkat === 0 ? '#9be3a8' : tingkat === 1 ? '#ffd08a' : '#ffb4ab'}">●</b> ` : ''}${esc(teks)}</span></div>`;
 let aktif = (location.hash || '#gcs').slice(1);
 
@@ -90,7 +93,8 @@ function gambarImt() {
   $('isi').innerHTML = `<section class="kartu"><h2>Indeks massa tubuh</h2><p class="sub">Klasifikasi Asia-Pasifik (WHO 2000)</p>
     <div class="baris"><div><label class="lbl" for="bb">Berat (kg)</label><input id="bb" type="number" inputmode="decimal" min="1" max="400" step="0.1"></div>
     <div><label class="lbl" for="tb">Tinggi (cm)</label><input id="tb" type="number" inputmode="decimal" min="30" max="250" step="0.1"></div></div></section><div id="out"></div>`;
-  const hitung = () => { const b = +$('bb').value, t = +$('tb').value / 100; if (!b || !t) { $('out').innerHTML = hasil('–', 'Isi berat dan tinggi'); return; }
+  const hitung = () => { const l = luar(); if (l) { $('out').innerHTML = hasil('–', l); return; }
+    const b = +$('bb').value, t = +$('tb').value / 100; if (!b || !t) { $('out').innerHTML = hasil('–', 'Isi berat dan tinggi'); return; }
     const i = b / (t * t), [k, lv] = i < 18.5 ? ['Berat badan kurang', 1] : i < 23 ? ['Normal', 0] : i < 25 ? ['Berat badan lebih (berisiko)', 1] : i < 30 ? ['Obesitas I', 2] : ['Obesitas II', 2];
     $('out').innerHTML = hasil(angka(i), k, lv); };
   $('isi').oninput = hitung; hitung();
@@ -103,7 +107,9 @@ function gambarEgfr() {
     <div class="baris"><div><label class="lbl" for="us">Usia (tahun)</label><input id="us" type="number" inputmode="numeric" min="18" max="120"></div>
     <div><label class="lbl" for="jk">Jenis kelamin</label><select id="jk"><option value="l">Laki-laki</option><option value="p">Perempuan</option></select></div></div>
     <p class="catatan">Sumber: Inker LA dkk., NEJM 2021</p></section><div id="out"></div>`;
-  const hitung = () => { let s = +$('kr').value; const u = +$('us').value, p = $('jk').value === 'p';
+  const hitung = () => { const um = $('sat').value === 'um'; $('kr').min = um ? 9 : 0.1; $('kr').max = um ? 2650 : 30;   // batas ikut satuan
+    const l = luar(); if (l) { $('out').innerHTML = hasil('–', l); return; }
+    let s = +$('kr').value; const u = +$('us').value, p = $('jk').value === 'p';
     if (!s || !u) { $('out').innerHTML = hasil('–', 'Isi kreatinin dan usia'); return; }
     if (u < 18) { $('out').innerHTML = hasil('–', 'Rumus ini untuk dewasa ≥ 18 tahun'); return; }
     if ($('sat').value === 'um') s = s / 88.4;
@@ -117,7 +123,8 @@ function gambarCairan() {
   $('isi').innerHTML = `<section class="kartu"><h2>Cairan rumatan</h2><p class="sub">Holliday–Segar (4-2-1)</p>
     <label class="lbl" for="bbc">Berat badan (kg)</label><input id="bbc" type="number" inputmode="decimal" min="0.5" max="200" step="0.1">
     <p class="catatan">100 mL/kg/hari untuk 10 kg pertama, 50 mL/kg untuk 10 kg berikutnya, 20 mL/kg untuk setiap kg di atas 20 kg. Sesuaikan dengan kondisi klinis (dehidrasi, gagal jantung/ginjal). Sumber: Holliday & Segar, Pediatrics 1957</p></section><div id="out"></div>`;
-  const hitung = () => { const b = +$('bbc').value; if (!b) { $('out').innerHTML = hasil('–', 'Isi berat badan'); return; }
+  const hitung = () => { const l = luar(); if (l) { $('out').innerHTML = hasil('–', l); return; }
+    const b = +$('bbc').value; if (!b) { $('out').innerHTML = hasil('–', 'Isi berat badan'); return; }
     const hari = Math.min(b, 10) * 100 + Math.max(Math.min(b, 20) - 10, 0) * 50 + Math.max(b - 20, 0) * 20;
     $('out').innerHTML = hasil(angka(hari / 24, 0), `mL/jam · ${angka(hari, 0)} mL/hari`); };
   $('isi').oninput = hitung; hitung();
