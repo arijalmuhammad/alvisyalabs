@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.5",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.5.zip",
-  "sha256": "889598e886acc9bcb0e40252ba0a9e7074f5fb45a9151fc366b2971f3c8b1fee",
-  "catatan": "Tablet TTD berhenti meminta tanda tangan begitu CPPT ditutup (CCare Dokter 4.10.8)."
+  "versi": "0.2.6",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.6.zip",
+  "sha256": "aebc548f8d0bfd0763d4d8a0691bffbe25bdb5a50efdc369e94ffc54e5d4cda6",
+  "catatan": "Pengaturan awal CCare Dokter (relay tablet, alarm pantau) kini berjalan di aplikasi; resep selalu 5 baris (CCare Dokter 4.10.9)."
 }
