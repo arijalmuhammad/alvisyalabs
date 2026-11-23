@@ -345,11 +345,12 @@ function bacaKodePasang(teks) {
   if (d) return { u: d[1], k: d[2], n: '' };
   const m = String(teks || '').trim().match(/SJC1:([A-Za-z0-9+/=_-]+)/);
   if (!m) return null;
-  try { const j = JSON.parse(decodeURIComponent(escape(atob(m[1].replace(/-/g, '+').replace(/_/g, '/'))))); return j.u && j.k ? { u: j.u, k: j.k, n: j.n || '' } : null; } catch (e) { return null; }
+  try { const j = JSON.parse(decodeURIComponent(escape(atob(m[1].replace(/-/g, '+').replace(/_/g, '/'))))); return /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(j.u) && j.k ? { u: j.u, k: String(j.k), n: String(j.n || '') } : null; } catch (e) { return null; }   // kunci hanya dikirim ke Apps Script
 }
+const dek = s => { try { return decodeURIComponent(s); } catch (e) { return s; } };   // % rusak di tautan/QR tidak mematikan aplikasi
 function bacaAkun() {
   if (CFG.mode === 'gas') return { k: CFG.kunci };
-  const dariTautan = bacaKodePasang(decodeURIComponent(location.hash.slice(1)));
+  const dariTautan = bacaKodePasang(dek(location.hash.slice(1)));
   if (dariTautan) { simpanLokal(SIMPAN, dariTautan); history.replaceState(null, '', location.pathname); return dariTautan; }
   const lama = bacaLokal(SIMPAN) || bacaKodePasang(bacaLokal('alvisyaTautan.ccare'));   // tautan yang pernah ditempel di halaman muka
   if (lama) simpanLokal(SIMPAN, lama);
@@ -902,8 +903,8 @@ function vSetup() {
       if (Date.now() - t0 > 60000) { selesai(); $('pesanPasang').textContent = 'Tidak ada kode QR terbaca. Coba lagi.'; return; }
       try {
         const [kode] = await det.detect(v);
-        const teks = kode && kode.rawValue, a = teks && bacaKodePasang(teks.includes('#') ? decodeURIComponent(teks.split('#')[1]) : teks);
-        if (a) { selesai(); $('kodePasang').value = teks.includes('#') ? decodeURIComponent(teks.split('#')[1]) : teks; $('pasangKode').click(); return; }
+        const teks = kode && kode.rawValue, a = teks && bacaKodePasang(teks.includes('#') ? dek(teks.split('#')[1]) : teks);
+        if (a) { selesai(); $('kodePasang').value = teks.includes('#') ? dek(teks.split('#')[1]) : teks; $('pasangKode').click(); return; }
         if (teks) $('pesanPasang').textContent = 'Kode QR ini bukan kode CCare Plus.';
       } catch (e) { /* bingkai belum siap */ }
       setTimeout(cari, 250);
@@ -994,7 +995,7 @@ $('tbBagi').onclick = () => {
 gambarTab(); gambar();
 if (CFG.mode === 'gas') muat('');
 else if (AKUN) muat('');
-window.addEventListener('hashchange', () => { const a = CFG.mode === 'gas' ? null : bacaKodePasang(decodeURIComponent(location.hash.slice(1))); if (a) { AKUN = bacaAkun(); S = null; D = null; Object.keys(cache).forEach(k => delete cache[k]); gambar(); muat(''); } });
+window.addEventListener('hashchange', () => { const a = CFG.mode === 'gas' ? null : bacaKodePasang(dek(location.hash.slice(1))); if (a) { AKUN = bacaAkun(); S = null; D = null; Object.keys(cache).forEach(k => delete cache[k]); gambar(); muat(''); } });
 window.addEventListener('online', () => { if (D && AKUN && CFG.mode !== 'gas') muat(awalDipilih, true); });   // sinyal kembali → kirim antrean & tarik
 document.addEventListener('visibilitychange', () => { if (!document.hidden && D && (CFG.mode === 'gas' || AKUN)) muat(awalDipilih, true); });
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(() => {});
