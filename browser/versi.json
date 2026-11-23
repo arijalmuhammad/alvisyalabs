@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.7",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.7.zip",
-  "sha256": "f1004ff8e886664d8c24507fb8c32da0b5dac62909cbba239dd69634154a6c92",
-  "catatan": "Bilah alamat bisa diketik (klik atau Ctrl+L)."
+  "versi": "0.2.8",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.8.zip",
+  "sha256": "183842761ddcd146db8b8450df9e3fe65d153f28e8c23fbfee49a1ffb485f8bb",
+  "catatan": "Nomor resep tidak lagi ganda (CCare Dokter 4.10.10)."
 }
