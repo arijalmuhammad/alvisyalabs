@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.15",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.15.zip",
-  "sha256": "229836e64fbeff0ad213d722744f79601d998974da09875786f24f845250cae8",
-  "catatan": "LOG diagnostik (menu ⋮ → Buka folder log): galat, permintaan C-CARE gagal, halaman lambat, catatan ekstensi (CCare Dokter 4.10.17)."
+  "versi": "0.2.16",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.16.zip",
+  "sha256": "7e6cfa9458d89f69fbe9c17f8f59e35006d0cf5d4c269a3ff30c0f29325d5a58",
+  "catatan": "5 baris resep obat kosong otomatis dinyalakan lagi (CCare Dokter 4.10.18)."
 }
