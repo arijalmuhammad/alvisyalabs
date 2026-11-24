@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.18",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.18.zip",
-  "sha256": "241403403ae9ef33e3c9e55653694ae5edae5006d698dddfee6755152533c2e6",
-  "catatan": "TTD tablet lebih cepat sampai ke PC: relay diperiksa tiap 1 detik (CCare Dokter 4.10.20)."
+  "versi": "0.2.19",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.19.zip",
+  "sha256": "5627df50e58d37edbfd972829ad7a77bd975c10767d0741839b36f821565da01",
+  "catatan": "Relay TTD: 1 detik saat tablet aktif, 5 detik saat tidak; relay gagal tercatat di LOG (CCare Dokter 4.10.21)."
 }
