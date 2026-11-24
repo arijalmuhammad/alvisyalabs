@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.16",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.16.zip",
-  "sha256": "7e6cfa9458d89f69fbe9c17f8f59e35006d0cf5d4c269a3ff30c0f29325d5a58",
-  "catatan": "5 baris resep obat kosong otomatis dinyalakan lagi (CCare Dokter 4.10.18)."
+  "versi": "0.2.17",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.17.zip",
+  "sha256": "b27333af25d78c08a45f4f82974035eb43d152fdff03aa8ce0a9f45d9126ab35",
+  "catatan": "Resep alkes tidak lagi hilang saat Simpan kedua (mis. TTD); galat panel TTD mini diperbaiki (CCare Dokter 4.10.19)."
 }
