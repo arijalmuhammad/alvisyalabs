@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.17",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.17.zip",
-  "sha256": "b27333af25d78c08a45f4f82974035eb43d152fdff03aa8ce0a9f45d9126ab35",
-  "catatan": "Resep alkes tidak lagi hilang saat Simpan kedua (mis. TTD); galat panel TTD mini diperbaiki (CCare Dokter 4.10.19)."
+  "versi": "0.2.18",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.18.zip",
+  "sha256": "241403403ae9ef33e3c9e55653694ae5edae5006d698dddfee6755152533c2e6",
+  "catatan": "TTD tablet lebih cepat sampai ke PC: relay diperiksa tiap 1 detik (CCare Dokter 4.10.20)."
 }
