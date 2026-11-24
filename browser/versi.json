@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.20",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.20.zip",
-  "sha256": "53634371bc0033a15473d8d82d3b693c05ab195d6bc1602fe38e439c967b660b",
-  "catatan": "Instruksi obat lama (waktu makan, satuan) tidak lagi terbawa saat obat diganti; LOG Simpan memisahkan obat baru (CCare Dokter 4.10.22)."
+  "versi": "0.2.21",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.21.zip",
+  "sha256": "d7b308c61e38130f82c392aae301c709288ff28900545dda972afd1989457ca8",
+  "catatan": "(×) hapus resep pada CPPT tersimpan tidak lagi menimpa catatan resep yang salah (CCare Dokter 4.10.23)."
 }
