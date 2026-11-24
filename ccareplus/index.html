@@ -155,6 +155,20 @@ dialog[open]{animation:masuk 200ms ease-out both}
 .chips button[aria-pressed=true]{background:var(--utama-tipis);border-color:var(--utama);color:var(--utama);font-weight:600}
 .chips button small{color:var(--teks-2);font-weight:400}
 .salin{display:flex;gap:8px}.salin input{flex:1}
+.scan-info{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:var(--kanvas);font-size:13px;color:var(--teks-2)}
+.scan-info svg{width:18px;height:18px;flex:none;margin-top:1px;color:var(--utama)}.scan-info b{display:block;color:var(--teks);font-size:14px}
+.scan-atas{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.scan-atas .tb-teks{min-height:36px;padding:0 4px;border:0;background:none;color:var(--utama);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.scan-hari{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;padding:7px 7px 0}
+.scan-hari button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:72px;padding:6px 2px;border:1px solid var(--garis);border-radius:12px;background:var(--putih);color:var(--teks);font:inherit;cursor:pointer;transition:background .15s,border-color .15s}
+.scan-hari button:hover{background:var(--isian)}
+.scan-hari .h{font-size:12px;color:var(--teks-2)}.scan-hari .d{font-size:20px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.scan-hari .s{font-size:11px;color:var(--redup);white-space:nowrap}.scan-hari .s.ada{color:var(--hijau);font-weight:600}
+.scan-hari button.kini .h{color:var(--utama);font-weight:700}.scan-hari button.kini .d{color:var(--utama)}
+.scan-hari button[aria-pressed=true]{border:2px solid var(--utama);background:var(--utama-tipis)}
+.scan-hari button[aria-pressed=true] .h{color:var(--utama)}
+.scan-hari button[aria-pressed=true]::after{content:"";position:absolute;top:-7px;right:-7px;width:18px;height:18px;box-shadow:0 0 0 2px var(--putih);border-radius:50%;background:var(--utama) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/11px no-repeat}
+.dlg-kaki .ringkas{margin-right:auto;align-self:center;font-size:13px;color:var(--teks-2)}
 label.lbl{display:block;font-size:13px;font-weight:600;color:var(--teks-2);margin-bottom:4px}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--teks);color:var(--putih);padding:10px 16px;border-radius:12px;font-size:14px;z-index:20;box-shadow:0 6px 24px rgba(15,39,66,.25);max-width:calc(100vw - 32px)}
 .setup{max-width:520px;margin:48px auto;padding:24px}
@@ -951,11 +965,16 @@ $('tbScan').onclick = () => {
   const hari = []; for (let i = 0; i < 7; i++) hari.push(geser(D.hariIni, -i));
   hari.slice(0, 3).forEach(t => { if (!ada.has(t) && hariDari(t) !== 0) pilih.add(t); });
   const diHp = !!(window.AlvisyaLabs && AlvisyaLabs.scan);   // APK AlvisyaLabs: scan di HP ini, di latar belakang
-  bukaDialog('Minta scan C-CARE', `<p class="ket" style="margin:0">${diHp ? 'Scan dijalankan di HP ini di latar belakang, memakai login C-CARE di aplikasi AlvisyaLabs (Lainnya → Login C-CARE di HP ini). Hasilnya langsung dikirim ke Sheet; pantau lewat notifikasi.' : 'Scan dijalankan oleh ekstensi Scan Jasa di komputer Anda (Chrome menyala, C-CARE sudah login). Ekstensi memeriksa permintaan tiap ±5 menit, lalu hasilnya langsung dikirim ke Sheet.'}</p>
-    <div><span class="lbl">Tanggal</span><div class="chips" id="chipScan">${hari.map(t => `<button type="button" data-t="${t}" aria-pressed="${pilih.has(t)}">${tglPendek(t)}${ada.has(t) ? ' <small>· sudah ada</small>' : ''}</button>`).join('')}</div></div>
+  const urut = hari.slice().reverse(), bln = t => BLN[+t.slice(5, 7) - 1];
+  bukaDialog('Minta scan C-CARE', `<div class="scan-info">${IK.info}<div><b>${diHp ? 'Dijalankan di HP ini' : 'Dijalankan di komputer Anda'}</b>${diHp ? 'Di latar belakang, memakai login C-CARE di aplikasi AlvisyaLabs. Pantau lewat notifikasi.' : 'Oleh ekstensi Scan Jasa (Chrome menyala, C-CARE login). Diperiksa tiap ±5 menit.'} Hasil langsung masuk ke Sheet.</div></div>
+    <div><div class="scan-atas"><span class="lbl" id="lblScan">Pilih tanggal · ${bln(urut[0]) === bln(urut[6]) ? bln(urut[6]) : bln(urut[0]) + '–' + bln(urut[6])}</span><button type="button" class="tb-teks" id="pilihBelum">Pilih yang belum ada</button></div>
+    <div class="scan-hari" id="chipScan" role="group" aria-labelledby="lblScan">${urut.map(t => `<button type="button" data-t="${t}" class="${t === D.hariIni ? 'kini' : ''}" aria-pressed="${pilih.has(t)}" aria-label="${t === D.hariIni ? 'Hari ini, ' : ''}${tglPendek(t)}${ada.has(t) ? ', sudah ada' : ', belum ada'}"><span class="h">${HARI[hariDari(t)]}</span><span class="d">${+t.slice(8)}</span><span class="s${ada.has(t) ? ' ada' : ''}">${ada.has(t) ? '✓ Ada' : 'Belum'}</span></button>`).join('')}</div></div>
     ${D.mintaScan && (D.mintaScan.status === 'menunggu' || D.mintaScan.status === 'jalan') ? '<p class="ket" style="margin:0;color:var(--kuning)">Permintaan sebelumnya belum selesai — permintaan baru menggantikannya.</p>' : ''}
-    <p class="ket" id="pesanScan" style="margin:0"></p>`, '<button class="tb kedua" value="tutup">Batal</button><button class="tb utama" type="button" id="kirimScan">Minta scan</button>');
-  $('chipScan').querySelectorAll('button').forEach(b => b.onclick = () => { const t = b.dataset.t; pilih.has(t) ? pilih.delete(t) : pilih.add(t); b.setAttribute('aria-pressed', pilih.has(t)); });
+    <p class="ket" id="pesanScan" role="status" style="margin:0"></p>`, '<span class="ringkas" id="ringkasScan"></span><button class="tb kedua" value="tutup">Batal</button><button class="tb utama" type="button" id="kirimScan">Minta scan</button>');
+  const segar = () => { $('chipScan').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', pilih.has(b.dataset.t))); $('ringkasScan').textContent = pilih.size ? pilih.size + ' tanggal dipilih' : 'Belum ada yang dipilih'; $('kirimScan').disabled = !pilih.size; if (pilih.size) $('pesanScan').textContent = ''; };
+  $('chipScan').querySelectorAll('button').forEach(b => b.onclick = () => { const t = b.dataset.t; pilih.has(t) ? pilih.delete(t) : pilih.add(t); segar(); });
+  $('pilihBelum').onclick = () => { pilih.clear(); hari.forEach(t => { if (!ada.has(t)) pilih.add(t); }); segar(); };
+  segar();
   $('kirimScan').onclick = async () => {
     if (!pilih.size) { $('pesanScan').textContent = 'Pilih minimal satu tanggal.'; return; }
     $('kirimScan').disabled = true;
