@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.19",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.19.zip",
-  "sha256": "5627df50e58d37edbfd972829ad7a77bd975c10767d0741839b36f821565da01",
-  "catatan": "Relay TTD: 1 detik saat tablet aktif, 5 detik saat tidak; relay gagal tercatat di LOG (CCare Dokter 4.10.21)."
+  "versi": "0.2.20",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.20.zip",
+  "sha256": "53634371bc0033a15473d8d82d3b693c05ab195d6bc1602fe38e439c967b660b",
+  "catatan": "Instruksi obat lama (waktu makan, satuan) tidak lagi terbawa saat obat diganti; LOG Simpan memisahkan obat baru (CCare Dokter 4.10.22)."
 }
