@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.14",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.14.zip",
-  "sha256": "9ea4dc83ac3141856ff07a3942bfcf0ddd1072db5880508f89a5b47cdd5f7540",
-  "catatan": "Resep alkes stok minus boleh diresepkan lagi (sesuai LMITD); (+) resep otomatis tetap mati (CCare Dokter 4.10.16)."
+  "versi": "0.2.15",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.15.zip",
+  "sha256": "229836e64fbeff0ad213d722744f79601d998974da09875786f24f845250cae8",
+  "catatan": "LOG diagnostik (menu ⋮ → Buka folder log): galat, permintaan C-CARE gagal, halaman lambat, catatan ekstensi (CCare Dokter 4.10.17)."
 }
