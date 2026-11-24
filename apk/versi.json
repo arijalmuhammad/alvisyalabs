@@ -1,7 +1,7 @@
 {
-  "versionCode": 23,
-  "versionName": "1.22",
+  "versionCode": 24,
+  "versionName": "1.23",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "4b96686710791d194905bceb03aa5aa7609dda581cafbb20c42c64ba73a2bcb1",
-  "catatan": "dr. Maya Sushmita (RME AwanMedis) kini dibuka di dalam aplikasi, layar penuh, dengan kamera dan mikrofon untuk konsultasi video."
+  "sha256": "05979ba9d4ef44622962218c3d88f68314e49020a2b32de2f25a63e56b9b23a6",
+  "catatan": "Tablet TTD mengecek PC tiap 1 detik (sebelumnya 3 detik). PENTING: kunci aplikasi baru — hapus AlvisyaLabs lama dulu, lalu pasang versi ini; atur ulang relay TTD, pin, dan jeda."
 }
