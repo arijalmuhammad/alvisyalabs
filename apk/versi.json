@@ -1,7 +1,7 @@
 {
-  "versionCode": 26,
-  "versionName": "1.25",
+  "versionCode": 27,
+  "versionName": "1.26",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "542393dbac4968e76b1b8795b99c6a051aff8e60018830fcf879f7952d540cf0",
-  "catatan": "TTD tablet: layar tanda tangan dipasang ulang otomatis bila halaman C-CARE berganti; goresan pasien selalu terbaca sehingga tombol Simpan menyala."
+  "sha256": "791dfbc0212e19d7f91cb43b85df2a6d919a836ec83d5c26450a948d5dd4d0ca",
+  "catatan": "TTD tablet: sesudah pasien menekan Simpan, tanda tangan yang sudah tersimpan di C-CARE selalu dilaporkan ke PC (sebelumnya bisa terbaca gagal)."
 }
