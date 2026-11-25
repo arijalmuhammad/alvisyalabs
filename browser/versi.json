@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.21",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.21.zip",
-  "sha256": "d7b308c61e38130f82c392aae301c709288ff28900545dda972afd1989457ca8",
-  "catatan": "(×) hapus resep pada CPPT tersimpan tidak lagi menimpa catatan resep yang salah (CCare Dokter 4.10.23)."
+  "versi": "0.2.22",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.22.zip",
+  "sha256": "07d3531b0299792936203696258a2cb789a1fe20875f3a7a22d9dd23abe310ba",
+  "catatan": "TTD: CPPT membaca form C-CARE langsung bila tablet tidak melapor; lencana Sudah TTD lebih akurat (CCare Dokter 4.10.24)."
 }
