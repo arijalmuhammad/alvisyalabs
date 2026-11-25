@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Unduh Aplikasi</title>
+<meta name="description" content="Aplikasi Alvisya Labs yang bisa diunduh: Android, tablet tanda tangan, dan ekstensi PC.">
+<meta name="theme-color" content="#263C92">
+<link rel="icon" href="/ikon/alvisya-192.png">
+<style>
+:root{--bg:#F5F7FB;--kartu:#fff;--tinta:#0F2742;--redup:#4F6478;--garis:#D6DCE8;--utama:#263C92;--utama-2:#1D2F75;--lembut:#E8EDF8}
+@media (prefers-color-scheme:dark){:root{--bg:#0B1524;--kartu:#13213A;--tinta:#E8EEF8;--redup:#A9B6CB;--garis:#24365A;--utama:#7E97F2;--utama-2:#9BB0F6;--lembut:#1B2C4C}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tinta);font:16px/1.55 system-ui,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:32px max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left))}
+.atas{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.kembali{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;border:1px solid var(--garis);background:var(--kartu);color:var(--tinta);text-decoration:none}
+.kembali:focus-visible,.btn:focus-visible{outline:2px solid var(--utama);outline-offset:3px}
+h1{font-size:clamp(26px,5vw,34px);line-height:1.2;margin:0;text-wrap:balance}
+.lead{color:var(--redup);margin:4px 0 24px}
+.kartu{display:grid;grid-template-columns:56px 1fr;gap:16px;align-items:start;background:var(--kartu);border:1px solid var(--garis);border-radius:16px;padding:18px;margin-bottom:12px}
+.ikon{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:var(--lembut);color:var(--utama)}
+.ikon svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.kartu h2{font-size:18px;margin:0}
+.kartu p{margin:2px 0 12px;color:var(--redup);font-size:15px}
+.lencana{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--lembut);color:var(--utama);margin-left:6px;vertical-align:middle}
+.aksi{display:flex;flex-wrap:wrap;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;border:1px solid var(--utama);color:var(--utama);background:transparent}
+.btn.utama{background:var(--utama);color:#fff}
+.btn.utama:hover{background:var(--utama-2)}
+.kecil{font-size:14px;color:var(--redup)}
+</style>
+</head>
+<body>
+<main>
+  <div class="atas">
+    <a class="kembali" href="/" aria-label="Kembali ke halaman muka"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+    <h1>Unduh Aplikasi</h1>
+  </div>
+  <p class="lead">Aplikasi Alvisya Labs yang dipasang di HP, tablet, atau PC.</p>
+
+  <section class="kartu" aria-labelledby="a1">
+    <div class="ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
+    <div>
+      <h2 id="a1">AlvisyaLabs <span class="lencana">Android</span></h2>
+      <p>Halaman muka ini sebagai aplikasi HP: CCare Plus, RME dr. Maya Sushmita, kalkulator, dan layar tanda tangan tablet.</p>
+      <div class="aksi"><a class="btn utama" href="/apk/AlvisyaLabs.apk" download>Unduh APK</a></div>
+    </div>
+  </section>
+
+  <section class="kartu" aria-labelledby="a2">
+    <div class="ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 17c3-4 5 2 8-2s4-6 6-3 2 4 4 2"/><path d="M3 21h18"/></svg></div>
+    <div>
+      <h2 id="a2">TTD Dokter Umum <span class="lencana">HP + PC</span></h2>
+      <p>Pasien tanda tangan Informasi Rencana Asuhan di HP dokter. Berisi APK HP dan ekstensi PC.</p>
+      <div class="aksi"><a class="btn utama" href="/dokter-umum/">Buka halaman unduh</a></div>
+    </div>
+  </section>
+
+  <section class="kartu" aria-labelledby="a3">
+    <div class="ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 17c2-2 3 1 5-1s2-2 3-1"/></svg></div>
+    <div>
+      <h2 id="a3">TTD Front Office <span class="lencana">Tablet + PC</span></h2>
+      <p>General Consent pasien ditandatangani di tablet Front Office. Berisi APK tablet dan ekstensi PC.</p>
+      <div class="aksi"><a class="btn utama" href="/front-office/">Buka halaman unduh</a></div>
+    </div>
+  </section>
+
+  <section class="kartu" aria-labelledby="a4">
+    <div class="ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+    <div>
+      <h2 id="a4">CCare Dokter <span class="lencana">Ekstensi Chrome</span></h2>
+      <p>Bantuan C-CARE untuk akun dokter di Chrome/Edge: CPPT, resep, TTD tablet. AlvisyaLabs Browser sudah memuatnya, tidak perlu dipasang lagi.</p>
+      <div class="aksi"><a class="btn utama" href="CCare-Dokter-4.10.24.zip" download>Unduh ekstensi 4.10.24</a></div>
+      <p class="kecil" style="margin:10px 0 0">Ekstrak ZIP, buka <b>chrome://extensions</b>, nyalakan Mode pengembang, tekan Muat yang belum dikemas, pilih folder tadi.</p>
+    </div>
+  </section>
+</main>
+</body>
+</html>
