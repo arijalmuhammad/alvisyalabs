@@ -8,27 +8,39 @@
 <meta name="theme-color" content="#263C92">
 <link rel="icon" href="/ikon/alvisya-192.png">
 <style>
-:root{--bg:#F5F7FB;--kartu:#fff;--tinta:#0F2742;--redup:#4F6478;--garis:#D6DCE8;--utama:#263C92;--utama-2:#1D2F75;--lembut:#E8EDF8}
+:root{--bg:#F5F7FB;--kartu:#fff;--tinta:#0F2742;--redup:#4F6478;--garis:#D6DCE8;--utama:#263C92;--utama-2:#1D2F75;--lembut:#E8EDF8;--r:16px}
 @media (prefers-color-scheme:dark){:root{--bg:#0B1524;--kartu:#13213A;--tinta:#E8EEF8;--redup:#A9B6CB;--garis:#24365A;--utama:#7E97F2;--utama-2:#9BB0F6;--lembut:#1B2C4C}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tinta);font:16px/1.55 system-ui,"Segoe UI",Roboto,sans-serif}
-main{max-width:760px;margin:0 auto;padding:32px max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left))}
-.atas{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.kembali{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;border:1px solid var(--garis);background:var(--kartu);color:var(--tinta);text-decoration:none}
-.kembali:focus-visible,.btn:focus-visible{outline:2px solid var(--utama);outline-offset:3px}
-h1{font-size:clamp(26px,5vw,34px);line-height:1.2;margin:0;text-wrap:balance}
-.lead{color:var(--redup);margin:4px 0 24px}
-.kartu{display:grid;grid-template-columns:56px 1fr;gap:16px;align-items:start;background:var(--kartu);border:1px solid var(--garis);border-radius:16px;padding:18px;margin-bottom:12px}
-.ikon{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:var(--lembut);color:var(--utama)}
-.ikon svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.kartu h2{font-size:18px;margin:0}
-.kartu p{margin:2px 0 12px;color:var(--redup);font-size:15px}
-.lencana{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--lembut);color:var(--utama);margin-left:6px;vertical-align:middle}
+main{max-width:1040px;margin:0 auto;padding:32px max(16px,env(safe-area-inset-right)) 56px max(16px,env(safe-area-inset-left))}
+.atas{display:flex;align-items:center;gap:12px}
+.kembali{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;border:1px solid var(--garis);background:var(--kartu);color:var(--tinta);text-decoration:none;transition:transform .15s}
+.kembali:hover{transform:translateX(-2px)}
+h1{font-size:clamp(26px,4.5vw,34px);line-height:1.2;margin:0;text-wrap:balance}
+.lead{color:var(--redup);margin:6px 0 24px 56px}
+.kelompok{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--redup);margin:28px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.kartu{display:flex;flex-direction:column;gap:12px;min-width:0;background:var(--kartu);border:1px solid var(--garis);border-radius:var(--r);padding:20px;transition:transform .18s,box-shadow .18s}
+.kartu:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,39,66,.08)}
+.kepala{display:flex;gap:14px;align-items:center}
+.ikon{flex:none;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--lembut);color:var(--utama)}
+.ikon svg,.btn svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn svg{width:20px;height:20px}
+.kartu h2{font-size:18px;line-height:1.3;margin:0}
+.lencana{display:inline-block;margin-top:4px;font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;background:var(--lembut);color:var(--utama)}
+.kartu p{margin:0;color:var(--redup);font-size:15px;flex:1}
 .aksi{display:flex;flex-wrap:wrap;gap:8px}
-.btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;border:1px solid var(--utama);color:var(--utama);background:transparent}
+.btn{flex:1 1 140px;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 14px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;border:1px solid var(--utama);color:var(--utama);background:transparent;transition:transform .12s,background .15s}
 .btn.utama{background:var(--utama);color:#fff}
 .btn.utama:hover{background:var(--utama-2)}
-.kecil{font-size:14px;color:var(--redup)}
+.btn:hover{transform:translateY(-1px)}.btn:active{transform:translateY(1px)}
+.btn:focus-visible,.kembali:focus-visible,summary:focus-visible{outline:2px solid var(--utama);outline-offset:3px}
+details{font-size:14px;color:var(--redup)}
+summary{cursor:pointer;font-weight:600;color:var(--utama);min-height:32px;display:flex;align-items:center}
+details ol{margin:6px 0 0;padding-left:20px}
+.catatan{margin-top:28px;font-size:14px;color:var(--redup)}
+@media (max-width:480px){.lead{margin-left:0}.btn{flex-basis:100%}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
@@ -37,44 +49,70 @@ h1{font-size:clamp(26px,5vw,34px);line-height:1.2;margin:0;text-wrap:balance}
     <a class="kembali" href="/" aria-label="Kembali ke halaman muka"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
     <h1>Unduh Aplikasi</h1>
   </div>
-  <p class="lead">Aplikasi Alvisya Labs yang dipasang di HP, tablet, atau PC.</p>
+  <p class="lead">Aplikasi Alvisya Labs untuk HP, tablet, dan PC klinik. Setiap unduhan meminta kata sandi.</p>
 
-  <section class="kartu" aria-labelledby="a1">
-    <div class="ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
-    <div>
-      <h2 id="a1">AlvisyaLabs <span class="lencana">Android</span></h2>
+  <h2 class="kelompok">HP &amp; tablet (Android)</h2>
+  <div class="grid">
+    <section class="kartu" aria-labelledby="a1">
+      <div class="kepala">
+        <div class="ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
+        <div><h2 id="a1">AlvisyaLabs</h2><span class="lencana">Android</span></div>
+      </div>
       <p>Halaman muka ini sebagai aplikasi HP: CCare Plus, RME dr. Maya Sushmita, kalkulator, dan layar tanda tangan tablet.</p>
-      <div class="aksi"><a class="btn utama" href="/apk/AlvisyaLabs.apk" download>Unduh APK</a></div>
-    </div>
-  </section>
+      <div class="aksi"><a class="btn utama" href="/apk/AlvisyaLabs.apk" download data-unduh="Unduh APK"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 10l5 5 5-5M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>Unduh APK</a></div>
+      <details><summary>Cara pasang</summary><ol><li>Buka APK, izinkan pemasangan dari peramban bila diminta.</li><li>Pembaruan berikutnya: menu aplikasi → Periksa pembaruan.</li></ol></details>
+    </section>
 
-  <section class="kartu" aria-labelledby="a2">
-    <div class="ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 17c3-4 5 2 8-2s4-6 6-3 2 4 4 2"/><path d="M3 21h18"/></svg></div>
-    <div>
-      <h2 id="a2">TTD Dokter Umum <span class="lencana">HP + PC</span></h2>
-      <p>Pasien tanda tangan Informasi Rencana Asuhan di HP dokter. Berisi APK HP dan ekstensi PC.</p>
-      <div class="aksi"><a class="btn utama" href="/dokter-umum/">Buka halaman unduh</a></div>
-    </div>
-  </section>
+    <section class="kartu" aria-labelledby="a2">
+      <div class="kepala">
+        <div class="ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 17c3-4 5 2 8-2s4-6 6-3 2 4 4 2"/><path d="M3 21h18"/></svg></div>
+        <div><h2 id="a2">TTD Dokter Umum</h2><span class="lencana">HP dokter + PC</span></div>
+      </div>
+      <p>Pasien tanda tangan Informasi Rencana Asuhan di HP dokter. Pasang APK di HP dan ekstensi di PC.</p>
+      <div class="aksi">
+        <a class="btn utama" href="/dokter-umum/TTD-Dokter-Umum.apk" download data-unduh="Unduh APK"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 10l5 5 5-5M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>APK</a>
+        <a class="btn" href="/dokter-umum/TTD-Dokter-Umum-ekstensi.zip" download data-unduh="Unduh ekstensi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 10l5 5 5-5M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>Ekstensi PC</a>
+      </div>
+      <details><summary>Cara pasang</summary><ol><li>HP: buka APK, masukkan kata sandi, Pindai kode QR.</li><li>PC: ekstrak ZIP, chrome://extensions → Mode pengembang → Muat yang belum dikemas; masukkan kata sandi, kode QR tampil.</li></ol></details>
+    </section>
 
-  <section class="kartu" aria-labelledby="a3">
-    <div class="ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 17c2-2 3 1 5-1s2-2 3-1"/></svg></div>
-    <div>
-      <h2 id="a3">TTD Front Office <span class="lencana">Tablet + PC</span></h2>
-      <p>General Consent pasien ditandatangani di tablet Front Office. Berisi APK tablet dan ekstensi PC.</p>
-      <div class="aksi"><a class="btn utama" href="/front-office/">Buka halaman unduh</a></div>
-    </div>
-  </section>
+    <section class="kartu" aria-labelledby="a3">
+      <div class="kepala">
+        <div class="ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 17c2-2 3 1 5-1s2-2 3-1"/></svg></div>
+        <div><h2 id="a3">TTD Front Office</h2><span class="lencana">Tablet FO + PC</span></div>
+      </div>
+      <p>General Consent ditandatangani pasien di tablet Front Office. Pasang APK di tablet dan ekstensi di PC FO.</p>
+      <div class="aksi">
+        <a class="btn utama" href="/front-office/TTD-Front-Office.apk" download data-unduh="Unduh APK"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 10l5 5 5-5M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>APK</a>
+        <a class="btn" href="/front-office/TTD-Front-Office-ekstensi.zip" download data-unduh="Unduh ekstensi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 10l5 5 5-5M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>Ekstensi PC</a>
+      </div>
+      <details><summary>Cara pasang</summary><ol><li>Tablet: buka APK, masukkan kata sandi, Pindai kode QR.</li><li>PC FO: pasang ekstensi seperti CCare Dokter; masukkan kata sandi, kode QR tampil.</li><li>Layar TTD pertama di tablet: pilih nama petugas di pojok kanan atas.</li></ol></details>
+    </section>
+  </div>
 
-  <section class="kartu" aria-labelledby="a4">
-    <div class="ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-    <div>
-      <h2 id="a4">CCare Dokter <span class="lencana">Ekstensi Chrome</span></h2>
-      <p>Bantuan C-CARE untuk akun dokter di Chrome/Edge: CPPT, resep, TTD tablet. AlvisyaLabs Browser sudah memuatnya, tidak perlu dipasang lagi.</p>
-      <div class="aksi"><a class="btn utama" href="CCare-Dokter-4.10.25.zip" download>Unduh ekstensi 4.10.25</a></div>
-      <p class="kecil" style="margin:10px 0 0">Ekstrak ZIP, buka <b>chrome://extensions</b>, nyalakan Mode pengembang, tekan Muat yang belum dikemas, pilih folder tadi.</p>
-    </div>
-  </section>
+  <h2 class="kelompok">PC Windows</h2>
+  <div class="grid">
+    <section class="kartu" aria-labelledby="a4">
+      <div class="kepala">
+        <div class="ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <div><h2 id="a4">CCare Dokter</h2><span class="lencana">Ekstensi 4.10.25</span></div>
+      </div>
+      <p>Bantuan C-CARE untuk akun dokter: CPPT, resep, TTD tablet. Sudah termuat di AlvisyaLabs Browser.</p>
+      <div class="aksi"><a class="btn utama" href="CCare-Dokter-4.10.25.zip" download data-unduh="Unduh ekstensi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 10l5 5 5-5M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>Unduh ekstensi</a></div>
+      <details><summary>Cara pasang</summary><ol><li>Ekstrak ZIP ke folder tetap, mis. <b>Documents\CCare-Dokter</b>.</li><li>Buka <b>chrome://extensions</b>, nyalakan <b>Mode pengembang</b>.</li><li>Tekan <b>Muat yang belum dikemas</b>, pilih folder tadi.</li></ol></details>
+    </section>
+    <section class="kartu" aria-labelledby="a5">
+      <div class="kepala">
+        <div class="ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/><path d="M3 12h4M17 12h4M12 3v4M12 17v4"/></svg></div>
+        <div><h2 id="a5">Bridging PCare</h2><span class="lencana">Windows · 4.0.0 · 111 MB</span></div>
+      </div>
+      <p>Mengisi Pelayanan Pasien di PCare BPJS dari kunjungan C-CARE. Bot hanya membaca C-CARE; simpan di PCare sesudah Anda melihat pratinjau.</p>
+      <div class="aksi"><a class="btn utama" href="#" data-unduh="Unduh pemasang" data-gabung="bp/BridgingPCare-4.0.0-Setup.exe" data-bagian="13" data-nama="BridgingPCare-4.0.0-Setup.exe" data-sha256="1ac79764ad12036268c404dc304312d7850459ea61bdd47f392e7b94a8277658"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 10l5 5 5-5M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg><span class="label">Unduh pemasang</span></a></div>
+      <details><summary>Cara pasang</summary><ol><li>Jalankan BridgingPCare-4.0.0-Setup.exe → Lanjut → Pasang (tanpa hak administrator).</li><li>Muncul "Windows protected your PC": More info → Run anyway (belum bertanda tangan digital).</li><li>Buka aplikasi → ⋯ → Pengaturan, isi akun PCare dan C-CARE.</li></ol></details>
+    </section>
+  </div>
+
 </main>
+<script src="/unduh/sandi.js"></script>
 </body>
 </html>
