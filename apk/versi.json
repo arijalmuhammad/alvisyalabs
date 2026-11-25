@@ -1,7 +1,7 @@
 {
-  "versionCode": 24,
-  "versionName": "1.23",
+  "versionCode": 25,
+  "versionName": "1.24",
   "url": "https://alvisya.my.id/apk/AlvisyaLabs.apk",
-  "sha256": "05979ba9d4ef44622962218c3d88f68314e49020a2b32de2f25a63e56b9b23a6",
-  "catatan": "Tablet TTD mengecek PC tiap 1 detik (sebelumnya 3 detik). PENTING: kunci aplikasi baru — hapus AlvisyaLabs lama dulu, lalu pasang versi ini; atur ulang relay TTD, pin, dan jeda."
+  "sha256": "727fabcd8db02d142c4ffb279a3a256dcb16e0d408dd530011b544516784f4d8",
+  "catatan": "Login C-CARE di tablet: petunjuk 'Selesai login' tidak lagi menutupi form login (pindah ke bawah, layar bisa diketik)."
 }
