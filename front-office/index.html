@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TTD Front Office</title>
+<meta name="description" content="Tanda tangan General Consent pasien di tablet Front Office untuk C-CARE.">
+<meta name="theme-color" content="#263C92">
+<link rel="icon" href="/ikon/alvisya-192.png">
+<style>
+:root{--bg:#F5F7FB;--kartu:#fff;--tinta:#0F2742;--redup:#4F6478;--garis:#D6DCE8;--utama:#263C92;--utama-2:#1D2F75}
+@media (prefers-color-scheme:dark){:root{--bg:#0B1524;--kartu:#13213A;--tinta:#E8EEF8;--redup:#A9B6CB;--garis:#24365A;--utama:#7E97F2;--utama-2:#9BB0F6}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tinta);font:16px/1.55 system-ui,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:40px max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left))}
+.label{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--utama)}
+h1{font-size:clamp(28px,6vw,40px);line-height:1.15;margin:6px 0 10px;text-wrap:balance}
+.lead{color:var(--redup);margin:0 0 28px;max-width:60ch}
+.kartu{background:var(--kartu);border:1px solid var(--garis);border-radius:14px;padding:20px;margin-bottom:16px}
+.kartu h2{font-size:19px;margin:0 0 4px}
+.kartu p{margin:0 0 14px;color:var(--redup)}
+.unduh{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:10px;background:var(--utama);color:#fff;font-weight:600;text-decoration:none}
+.unduh:hover{background:var(--utama-2)}
+.unduh:focus-visible{outline:2px solid var(--utama);outline-offset:3px}
+.unduh svg{width:20px;height:20px;fill:currentColor}
+ol{margin:12px 0 0;padding-left:22px;color:var(--redup)}li{margin-bottom:6px}
+code{font-family:ui-monospace,Consolas,monospace;font-size:14px;background:color-mix(in srgb,var(--utama) 10%,transparent);padding:1px 6px;border-radius:6px}
+.kecil{font-size:14px;color:var(--redup)}
+</style>
+</head>
+<body>
+<main>
+  <div class="label">Alvisya Labs · Front Office</div>
+  <h1>General Consent di tablet Front Office</h1>
+  <p class="lead">Tekan <b>TTD GC</b> di kolom Aksi daftar kunjungan C-CARE, Form General Consent pasien langsung tampil di tablet. Pasien tanda tangan, Simpan tetap tombol milik C-CARE. Hanya fitur TTD General Consent, tidak ada yang lain.</p>
+
+  <section class="kartu" aria-labelledby="h-apk">
+    <h2 id="h-apk">1. Aplikasi tablet (Android)</h2>
+    <p>Pasang di tablet Front Office. Saat dibuka, aplikasi meminta kata sandi.</p>
+    <a class="unduh" href="TTD-Front-Office.apk" download>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a1 1 0 0 1 1 1v9.6l3.3-3.3 1.4 1.4L12 17.4l-5.7-5.7 1.4-1.4 3.3 3.3V4a1 1 0 0 1 1-1zM5 19h14v2H5z"/></svg>
+      Unduh APK
+    </a>
+    <ol>
+      <li>Buka berkas APK, izinkan pemasangan dari peramban bila diminta.</li>
+      <li>Buka <b>TTD Front Office</b>, masukkan kata sandi.</li>
+      <li>Tekan <b>Pindai kode QR</b>, arahkan ke kode di halaman ekstensi PC (langkah 2).</li>
+      <li>Di layar tanda tangan pertama: pilih nama petugas di pojok kanan atas (diingat untuk pasien berikutnya; ganti saat pergantian shift).</li>
+    </ol>
+  </section>
+
+  <section class="kartu" aria-labelledby="h-eks">
+    <h2 id="h-eks">2. Ekstensi PC (Chrome / Edge / AlvisyaLabs Browser)</h2>
+    <p>Pasang di PC Front Office tempat C-CARE dibuka. Ekstensi ini hanya mengirim nomor kunjungan ke tablet.</p>
+    <a class="unduh" href="TTD-Front-Office-ekstensi.zip" download>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a1 1 0 0 1 1 1v9.6l3.3-3.3 1.4 1.4L12 17.4l-5.7-5.7 1.4-1.4 3.3 3.3V4a1 1 0 0 1 1-1zM5 19h14v2H5z"/></svg>
+      Unduh ekstensi
+    </a>
+    <ol>
+      <li>Ekstrak ZIP ke folder tetap, mis. <code>Documents\TTD-Front-Office</code>.</li>
+      <li>Buka <code>chrome://extensions</code>, nyalakan <b>Mode pengembang</b>, tekan <b>Muat yang belum dikemas</b>, pilih folder tadi.</li>
+      <li>Halaman ekstensi terbuka: masukkan kata sandi, kode QR untuk tablet tampil.</li>
+    </ol>
+  </section>
+
+  <p class="kecil">Satu PC = satu kode. Tablet hanya menerima pasien dari PC yang kodenya dipindai. Bila tablet hilang, tekan <b>Buat kode baru</b> di halaman ekstensi.</p>
+</main>
+</body>
+</html>
