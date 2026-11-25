@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.22",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.22.zip",
-  "sha256": "07d3531b0299792936203696258a2cb789a1fe20875f3a7a22d9dd23abe310ba",
-  "catatan": "TTD: CPPT membaca form C-CARE langsung bila tablet tidak melapor; lencana Sudah TTD lebih akurat (CCare Dokter 4.10.24)."
+  "versi": "0.2.23",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.23.zip",
+  "sha256": "e147fce5bb223b83c86b715760fad3a3c70c87f37c4dccc2095325b6fb801e9f",
+  "catatan": "Daftar poli digabung: poli yang gagal termuat dicoba ulang sebelum peringatan (CCare Dokter 4.10.25)."
 }
