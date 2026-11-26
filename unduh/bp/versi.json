@@ -1,6 +1,6 @@
 {
-  "versi": "4.0.1",
-  "zip": "https://alvisya.my.id/unduh/bp/BridgingPCare-pembaruan-4.0.1.zip",
-  "sha256": "a7f607061b8f0ac3b9358b56ae8c70ded1ab9e744163e7b9011c63a49e25d4f0",
-  "catatan": "Muat pasien: toast lama PCare tidak lagi dibaca sebagai 'Data tidak ditemukan'; 'Permintaan tidak dapat diproses' → halaman dimuat ulang otomatis (maks. 2×)."
+  "versi": "4.0.2",
+  "zip": "https://alvisya.my.id/unduh/bp/BridgingPCare-pembaruan-4.0.2.zip",
+  "sha256": "b19e4ca79a4031ad5323682930c7f8a196197025436a9effc0c42ad7164db3da",
+  "catatan": "Nama baru: Alvisya Bridging PCare (pengaturan, sandi tersimpan, dan data tetap)."
 }
