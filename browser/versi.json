@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.26",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.26.zip",
-  "sha256": "e3cd5420c8e12219ea0bbe58bfce40aad9f47374676b0b0e5b520b870fc53b7b",
-  "catatan": "Resep yang hanya berisi alkes (tanpa obat) kini sampai ke Farmasi (CCare Dokter 4.10.27)."
+  "versi": "0.2.27",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.27.zip",
+  "sha256": "0dcdbd0ed5b6b3802cb61cb8ad948a4bec56aa85406d7124cdbc80f6bbbdf634",
+  "catatan": "Nama baru: Alvisya Browser dan ekstensi Alvisya Dokter (pengaturan dan data tetap)."
 }
