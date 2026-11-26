@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.23",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.23.zip",
-  "sha256": "e147fce5bb223b83c86b715760fad3a3c70c87f37c4dccc2095325b6fb801e9f",
-  "catatan": "Daftar poli digabung: poli yang gagal termuat dicoba ulang sebelum peringatan (CCare Dokter 4.10.25)."
+  "versi": "0.2.24",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.24.zip",
+  "sha256": "b85407741695893c7388ae8dd4c2a629ad35dce20c5db9393de841404fb85f14",
+  "catatan": "Cetak surat (Surat Keterangan Sakit, Berobat, Sehat) langsung membuka dialog Cetak, tanpa menyimpan berkas ke folder Unduhan."
 }
