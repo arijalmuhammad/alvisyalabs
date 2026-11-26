@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.25",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.25.zip",
-  "sha256": "673ab423c06ae782ec20496e64a7878981baa588f932c738111d59e716a4caf9",
-  "catatan": "Surat istirahat di CPPT punya tombol Cetak (ikon printer); surat PDF C-CARE langsung ke dialog Cetak (CCare Dokter 4.10.26)."
+  "versi": "0.2.26",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.26.zip",
+  "sha256": "e3cd5420c8e12219ea0bbe58bfce40aad9f47374676b0b0e5b520b870fc53b7b",
+  "catatan": "Resep yang hanya berisi alkes (tanpa obat) kini sampai ke Farmasi (CCare Dokter 4.10.27)."
 }
