@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.24",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.24.zip",
-  "sha256": "b85407741695893c7388ae8dd4c2a629ad35dce20c5db9393de841404fb85f14",
-  "catatan": "Cetak surat (Surat Keterangan Sakit, Berobat, Sehat) langsung membuka dialog Cetak, tanpa menyimpan berkas ke folder Unduhan."
+  "versi": "0.2.25",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.25.zip",
+  "sha256": "673ab423c06ae782ec20496e64a7878981baa588f932c738111d59e716a4caf9",
+  "catatan": "Surat istirahat di CPPT punya tombol Cetak (ikon printer); surat PDF C-CARE langsung ke dialog Cetak (CCare Dokter 4.10.26)."
 }
