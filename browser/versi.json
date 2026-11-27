@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.28",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.28.zip",
-  "sha256": "9b383adc8cb7a0b15eeefcd3f790867706890cd8a846eaeb3ef1cb988ba108a1",
-  "catatan": "Cetak lewat internet ke PC printer (untuk Wi-Fi yang memblokir berbagi printer)."
+  "versi": "0.2.29",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.29.zip",
+  "sha256": "30d6e6d8faf16af7d4b3879bc93850bb12d14b05351cf3e36db5f43079d6e6a2",
+  "catatan": "Alkes tidak lagi hilang di Farmasi saat Simpan ulang."
 }
