@@ -1,6 +1,6 @@
 {
-  "versi": "0.2.27",
-  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.27.zip",
-  "sha256": "0dcdbd0ed5b6b3802cb61cb8ad948a4bec56aa85406d7124cdbc80f6bbbdf634",
-  "catatan": "Nama baru: Alvisya Browser dan ekstensi Alvisya Dokter (pengaturan dan data tetap)."
+  "versi": "0.2.28",
+  "zip": "https://alvisya.my.id/browser/alb-pembaruan-0.2.28.zip",
+  "sha256": "9b383adc8cb7a0b15eeefcd3f790867706890cd8a846eaeb3ef1cb988ba108a1",
+  "catatan": "Cetak lewat internet ke PC printer (untuk Wi-Fi yang memblokir berbagi printer)."
 }
